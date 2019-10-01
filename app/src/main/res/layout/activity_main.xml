@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <pony.xcode.chart.PieChartView
+        android:id="@+id/picChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:pcv_diameter="240dp"
+        app:pcv_divider_width="4dp" />
+
+    <com.holike.demo.widget.PieChartView2
+        android:id="@+id/pcv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <pony.xcode.chart.LineChartView
+        android:id="@+id/lineChartView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lcv_animation_duration="2000"
+        app:lcv_description_height="20dp"
+        app:lcv_description_oval_size="16dp"
+        app:lcv_description_textSize="12sp"
+        app:lcv_display_animation="true"
+        app:lcv_itemWidth="30dp" />
+
+    <pony.xcode.chart.BarChartView
+        android:id="@+id/barChartView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bcv_include_leftEdge="false"
+        app:bcv_include_rightEdge="false" />
+
+</LinearLayout>

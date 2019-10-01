@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LineChartView">
+        <attr name="lcv_itemWidth" format="dimension" />
+        <!--左边距-->
+        <attr name="lcv_leftMargin" format="dimension" />
+        <!--右边距-->
+        <attr name="lcv_rightMargin" format="dimension" />
+        <!--距离顶部边距-->
+        <attr name="lcv_topMargin" format="dimension" />
+        <!--底部边距-->
+        <attr name="lcv_bottomMargin" format="dimension" />
+        <!--画x轴文字空间-->
+        <attr name="lcv_bottom_space" format="dimension" />
+        <!--x轴文字大小-->
+        <attr name="lcv_xAxis_textSize" format="dimension" />
+        <!--x轴文字颜色-->
+        <attr name="lcv_xAxis_textColor" format="color" />
+        <!--y轴文字大小-->
+        <attr name="lcv_yAxis_textSize" format="dimension" />
+        <!--y轴文字颜色-->
+        <attr name="lcv_yAxis_textColor" format="color" />
+        <!--是否显示虚线-->
+        <attr name="lcv_dashed_enabled" format="boolean" />
+        <!--虚线离y轴间距-->
+        <attr name="lcv_dashed_yAxisMargin" format="dimension" />
+        <!--虚线离x轴间距-->
+        <attr name="lcv_dashed_xAxisMargin" format="dimension" />
+        <!--虚线颜色-->
+        <attr name="lcv_dashed_color" format="color" />
+        <!--y轴平分等分数-->
+        <attr name="lcv_yScaleNum" format="integer" />
+        <!--是否显示折线-->
+        <attr name="lcv_polyLine_enabled" format="boolean" />
+        <!--折线粗细-->
+        <attr name="lcv_polyLine_width" format="dimension" />
+        <!--折线颜色-->
+        <attr name="lcv_polyLine_color" format="color" />
+        <!--是否展示描点-->
+        <attr name="lcv_trace_enable" format="boolean" />
+        <!--描点大小-->
+        <attr name="lcv_trace_size" format="dimension" />
+        <!--描点颜色-->
+        <attr name="lcv_trace_color" format="color" />
+        <!--是否展示区域-->
+        <attr name="lcv_area_enabled" format="boolean" />
+        <!--区域颜色-->
+        <attr name="lcv_area_color" format="color" />
+        <!--选中之后 竖线颜色-->
+        <attr name="lcv_vertical_lineColor" format="color" />
+        <!--竖线粗细-->
+        <attr name="lcv_vertical_lineWidth" format="dimension" />
+        <!--选中后 描点大小-->
+        <attr name="lcv_point_size" format="dimension" />
+        <!--选中后 描点颜色-->
+        <attr name="lcv_point_color" format="color" />
+        <attr name="lcv_point_strokeWidth" format="dimension" />
+        <attr name="lcv_point_strokeColor" format="color" />
+
+        <attr name="lcv_description_bgColor" format="reference" />
+        <attr name="lcv_description_height" format="dimension" />
+        <attr name="lcv_description_arrow_size" format="dimension" />
+        <attr name="lcv_description_textColor" format="color" />
+        <attr name="lcv_description_textSize" format="dimension" />
+        <attr name="lcv_description_padding" format="dimension" />
+        <attr name="lcv_description_oval_visibility">
+            <enum name="visible" value="0" />
+            <enum name="invisible" value="4" />
+            <enum name="gone" value="8" />
+        </attr>
+        <attr name="lcv_description_oval_size" format="dimension" />
+        <attr name="lcv_description_oval_strokeWidth" format="dimension" />
+        <attr name="lcv_description_over_strokeColor" format="color" />
+        <!--是否展示动画-->
+        <attr name="lcv_display_animation" format="boolean" />
+        <!--动画持续时间-->
+        <attr name="lcv_animation_duration" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="BarChartView">
+        <!--左边距-->
+        <attr name="bcv_leftMargin" format="dimension" />
+        <!--右边距-->
+        <attr name="bcv_rightMargin" format="dimension" />
+        <!--顶部边距-->
+        <attr name="bcv_topMargin" format="dimension" />
+        <!--底部边距-->
+        <attr name="bcv_bottomMargin" format="dimension" />
+        <!--y轴平分数-->
+        <attr name="bcv_yScaleNum" format="integer" />
+        <!--条形图背景颜色或图片-->
+        <attr name="bcv_barColor" format="reference" />
+        <!--条形图宽度-->
+        <attr name="bcv_barWidth" format="dimension" />
+        <!--条形图之间的边距-->
+        <attr name="bcv_divider_width" format="dimension" />
+        <!--左边腾出bcv_between_space空间-->
+        <attr name="bcv_include_leftEdge" format="boolean" />
+        <!--右边腾出bcv_between_space空间-->
+        <attr name="bcv_include_rightEdge" format="boolean" />
+        <attr name="bcv_yAxisMargin" format="dimension" />
+        <attr name="bcv_xAxisMargin" format="dimension" />
+        <attr name="bcv_bottom_space" format="dimension" />
+        <!--x轴文字大小-->
+        <attr name="bcv_xAxis_textSize" format="dimension" />
+        <!--x轴文字颜色-->
+        <attr name="bcv_xAxis_textColor" format="color" />
+        <!--y轴文字大小-->
+        <attr name="bcv_yAxis_textSize" format="dimension" />
+        <!--y轴文字颜色-->
+        <attr name="bcv_yAxis_textColor" format="color" />
+        <!--是否显示虚线-->
+        <attr name="bcv_dashed_enabled" format="boolean" />
+        <!--虚线颜色-->
+        <attr name="bcv_dashed_color" format="color" />
+        <!--是否在柱状图上显示数值-->
+        <attr name="bcv_barValue_enabled" format="boolean" />
+        <attr name="bcv_barValue_margin" format="dimension" />
+        <attr name="bcv_barValue_textSize" format="dimension" />
+        <attr name="bcv_barValue_textColor" format="dimension" />
+        <!--是否展示动画-->
+        <attr name="bcv_display_animation" format="boolean" />
+        <!--动画持续时间-->
+        <attr name="bcv_animation_duration" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="PieChartView">
+        <!--开始画弧的角度 默认270-->
+        <attr name="pcv_start_angle" format="float"/>
+        <!--圆的直径-->
+        <attr name="pcv_diameter" format="dimension"/>
+        <!--外圆颜色-->
+        <attr name="pcv_outer_color" format="color"/>
+        <!--内圆颜色-->
+        <attr name="pcv_inner_color" format="color"/>
+        <!--圆环宽度-->
+        <attr name="pcv_ring_width" format="dimension"/>
+        <!--分段宽度-->
+        <attr name="pcv_divider_width" format="dimension"/>
+        <attr name="pcv_divider_color" format="color"/>
+        <!--是否展示动画-->
+        <attr name="pcv_display_animation" format="boolean"/>
+        <!--动画持续时间-->
+        <attr name="pcv_animation_duration" format="integer"/>
+    </declare-styleable>
+</resources>
