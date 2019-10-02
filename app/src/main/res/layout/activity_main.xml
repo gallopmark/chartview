@@ -29,7 +29,7 @@
         app:lcv_description_oval_size="16dp"
         app:lcv_description_textSize="12sp"
         app:lcv_display_animation="true"
-        app:lcv_itemWidth="30dp" />
+        app:lcv_polyline_display_zero="true" />
 
     <pony.xcode.chart.BarChartView
         android:id="@+id/barChartView"

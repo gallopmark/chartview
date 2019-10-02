@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">Demo</string>
+
+    <string-array name="line_chart_months">
+        <item>1月</item>
+        <item>2月</item>
+        <item>3月</item>
+        <item>4月</item>
+        <item>5月</item>
+        <item>6月</item>
+        <item>7月</item>
+        <item>8月</item>
+        <item>9月</item>
+        <item>10月</item>
+        <item>11月</item>
+        <item>12月</item>
+    </string-array>
+
+    <string-array name="bar_chart_months">
+        <item>08.25\n至\n08.31</item>
+        <item>09.01\n至\n09.07</item>
+        <item>09.08\n至\n09.14</item>
+        <item>09.15\n至\n09.21</item>
+        <item>09.22\n至\n09.29</item>
+        <item>09.30\n至\n10.06</item>
+        <item>10.07\n至\n10.13</item>
+    </string-array>
 </resources>

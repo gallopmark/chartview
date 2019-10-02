@@ -16,6 +16,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 
@@ -70,6 +71,7 @@ public class BarChartView extends AbsChartView {
     private Typeface mBarValueTypeface;
 
     private List<BarChartData> mBarChartDataList;
+    private String[] mXAxisTextArray;
     private String mUnit; //单位(%等)
     private boolean mBarValueUnitEdge; //条形图上数值是否也显示单位
     private int mMaxGradient;
@@ -117,6 +119,7 @@ public class BarChartView extends AbsChartView {
         mDashedEnabled = ta.getBoolean(R.styleable.BarChartView_bcv_dashed_enabled, true);
         mDashedColor = ta.getColor(R.styleable.BarChartView_bcv_dashed_color, Color.parseColor("#66ffffff"));
         mBarValueEnabled = ta.getBoolean(R.styleable.BarChartView_bcv_barValue_enabled, true);
+        mBarValueUnitEdge = ta.getBoolean(R.styleable.BarChartView_bcv_barValueUnitEdge, true);
         mBarValueMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_margin, ChartUtils.dp2px(mContext, 4));
         mBarValueTextSize = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_textSize, ChartUtils.sp2px(mContext, 12));
         mBarValueTextColor = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_textColor, Color.parseColor("#ffffff"));
@@ -198,26 +201,35 @@ public class BarChartView extends AbsChartView {
 
     /*画条形图所需的总宽度*/
     private int getNeedWidth() {
-        int size = getDataSize() - 1 <= 0 ? 0 : getDataSize() - 1;
-        if (mIncludeLeftEdge && mIncludeRightEdge) {
-            size += 2;
-        } else if (mIncludeLeftEdge || mIncludeRightEdge) {
-            size += 1;
-        }
+        int dataSize;
+        int edgeSize;
         //左边距+y轴最大值文本所占宽度+y轴间距+条形图宽度*数据源size+每个item宽度*数据源size（-1或+1）
-        return mLeftMargin + getTextMaxWidth() + mYAxisMargin + getDataSize() * mBarWidth + size * mDividerWidth + mRightMargin;
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+            dataSize = mXAxisTextArray.length;
+            edgeSize = mXAxisTextArray.length - 1 <= 0 ? 0 : mXAxisTextArray.length - 1;
+        } else {
+            dataSize = mBarChartDataList.size();
+            edgeSize = mBarChartDataList.size() - 1 <= 0 ? 0 : mBarChartDataList.size() - 1;
+        }
+        if (mIncludeLeftEdge && mIncludeRightEdge) {
+            edgeSize += 2;
+        } else if (mIncludeLeftEdge || mIncludeRightEdge) {
+            edgeSize += 1;
+        }
+        return mLeftMargin + getTextMaxWidth() + mYAxisMargin + dataSize * mBarWidth + edgeSize * mDividerWidth + mRightMargin;
     }
 
     private int getTextMaxWidth() {
         if (mMaxGradient > 0) {
-            return ChartUtils.getTextWidth(String.valueOf(mMaxGradient), mYAxisTextPaint);
+            String text;
+            if (!TextUtils.isEmpty(mUnit)) {
+                text = mMaxGradient + mUnit;
+            } else {
+                text = String.valueOf(mMaxGradient);
+            }
+            return ChartUtils.getTextWidth(text, mYAxisTextPaint);
         }
         return 0;
-    }
-
-    private int getDataSize() {
-        if (mBarChartDataList == null) return 0;
-        return mBarChartDataList.size();
     }
 
     private int getYSpace() {
@@ -285,16 +297,32 @@ public class BarChartView extends AbsChartView {
     /*写x轴文字*/
     private void drawXAxis(Canvas canvas, int startDx, int startDy) {
         //画x轴刻度
-        for (int i = 0; i < mBarChartDataList.size(); i++) {
-            String text = mBarChartDataList.get(i).getXAxisText();
-            float x = startDx + (mDividerWidth + mBarWidth) * i;
-            float y = startDy + mXAxisMargin;
-            StaticLayout staticLayout = new StaticLayout(text, mXAxisTextPaint, mBarWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
-            canvas.save();
-            canvas.translate(x, y);
-            staticLayout.draw(canvas);
-            canvas.restore();
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+            for (int i = 0; i < mXAxisTextArray.length; i++) {
+                drawXAxisText(canvas, mXAxisTextArray[i], startDx, startDy, i);
+            }
+        } else {
+            for (int i = 0; i < mBarChartDataList.size(); i++) {
+                drawXAxisText(canvas, mBarChartDataList.get(i).getXAxisText(), startDx, startDy, i);
+            }
         }
+    }
+
+    private void drawXAxisText(Canvas canvas, String text, int startDx, int startDy, int index) {
+        float x = startDx + (mDividerWidth + mBarWidth) * index;
+        float y = startDy + mXAxisMargin;
+        /* staticLayout支持换行，它既可以为文字设置宽度上限来让文字自动换行，也会在 \n 处主动换行。
+         * width 是文字区域的宽度，文字到达这个宽度后就会自动换行；
+         * align 是文字的对齐方向；
+         * spacingmult 是行间距的倍数，通常情况下填 1 就好；
+         * spacingadd 是行间距的额外增加值，通常情况下填 0 就好；
+         * includeadd 是指是否在文字上下添加额外的空间，来避免某些过高的字符的绘制出现越界。
+         * */
+        StaticLayout staticLayout = new StaticLayout(text, mXAxisTextPaint, mBarWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
+        canvas.save();
+        canvas.translate(x, y);
+        staticLayout.draw(canvas);
+        canvas.restore();
     }
 
     /*画条形图*/
@@ -375,15 +403,40 @@ public class BarChartView extends AbsChartView {
     }
 
     public FluentInitializer withData(@Nullable List<BarChartData> data) {
-        return new FluentInitializer(data);
+        return withData(data, null);
+    }
+
+    public FluentInitializer withData(@Nullable List<BarChartData> data, @ArrayRes int arrayId) {
+        return withData(data, mContext.getResources().getStringArray(arrayId));
+    }
+
+    public FluentInitializer withData(@Nullable List<BarChartData> data, @Nullable String[] xAxisTextArray) {
+        return withData(data, xAxisTextArray, null);
+    }
+
+    public FluentInitializer withData(@Nullable List<BarChartData> data, @ArrayRes int arrayId, String unit) {
+        return withData(data, mContext.getResources().getStringArray(arrayId), unit);
+    }
+
+    /**
+     * @param data           数据源
+     * @param xAxisTextArray x轴文字刻度数组
+     * @param unit           单位（y轴需要显示的单位文字）
+     */
+    public FluentInitializer withData(@Nullable List<BarChartData> data, @Nullable String[] xAxisTextArray, @Nullable String unit) {
+        return new FluentInitializer(data, xAxisTextArray, unit);
     }
 
     /*用于多属性初始化*/
     public class FluentInitializer {
         List<BarChartData> mData;
 
-        FluentInitializer(@Nullable List<BarChartData> data) {
+        FluentInitializer(@Nullable List<BarChartData> data,
+                          @Nullable String[] xAxisTextArray,
+                          @Nullable String unit) {
             this.mData = data;
+            mXAxisTextArray = xAxisTextArray;
+            mUnit = unit;
         }
 
         /*设置成能被10整除的数，否则计算不精准*/
@@ -565,13 +618,7 @@ public class BarChartView extends AbsChartView {
             return this;
         }
 
-        public FluentInitializer unit(String unit) {
-            return unit(unit, true);
-        }
-
-        @SuppressWarnings("WeakerAccess")
-        public FluentInitializer unit(String unit, boolean barValueEdge) {
-            mUnit = unit;
+        public FluentInitializer barValueEdge(boolean barValueEdge) {
             mBarValueUnitEdge = barValueEdge;
             return this;
         }

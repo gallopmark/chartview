@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import androidx.annotation.ArrayRes;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import pony.xcode.chart.data.LineChartData;
 
 /*折线图*/
 public class LineChartView extends AbsChartView {
-    private int mItemWidth;
+    private int mItemWidth; //x轴刻度宽度
 
     private TextPaint mYAxisTextPaint; //y轴写文字
     private int mYAxisTextColor; //y周文字颜色
@@ -55,6 +56,7 @@ public class LineChartView extends AbsChartView {
 
     //PolyLine
     private boolean mPolylineEnabled; //是否展示折线
+    private boolean mDisplayPolylineZero;  //当数据最大值为0时，是否展示折线图
     private int mPolylineWidth; //折线粗细
     private int mPolylineColor; //折线颜色
 
@@ -103,7 +105,11 @@ public class LineChartView extends AbsChartView {
     private ValueAnimator mValueAnimation;
 
     //your data
+    private String[] mXAxisTextArray;  //x轴文字刻度数组
     private List<LineChartData> mLineChartDataList;
+    private String mUnit; //单位
+
+    private boolean mCanceledOnTouchOutside;
     //    private int mXSpace;  //平分x轴之后的距离值
     private int mMaxGradient;
     private float mProgress = 1f;
@@ -145,9 +151,10 @@ public class LineChartView extends AbsChartView {
         mDashedEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_dashed_enabled, true);
         mLineNumber = ta.getInt(R.styleable.LineChartView_lcv_yScaleNum, mYScaleNum);
         //polyline
-        mPolylineEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_polyLine_enabled, true);
-        mPolylineWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyLine_width, ChartUtils.dp2px(mContext, 1));
-        mPolylineColor = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyLine_color, Color.parseColor("#ffff00"));
+        mPolylineEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_enabled, true);
+        mDisplayPolylineZero = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_display_zero, true);
+        mPolylineWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyline_width, ChartUtils.dp2px(mContext, 1));
+        mPolylineColor = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyline_color, Color.parseColor("#ffff00"));
         //trace
         mTraceEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_trace_enable, false);
         mTraceSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_trace_size, ChartUtils.dp2px(mContext, 6));
@@ -180,6 +187,12 @@ public class LineChartView extends AbsChartView {
         mDescriptionOvalStrokeColor = ta.getColor(R.styleable.LineChartView_lcv_description_over_strokeColor, Color.parseColor("#0045A7"));
         mDisplayAnimation = ta.getBoolean(R.styleable.LineChartView_lcv_display_animation, true);
         mAnimationDuration = ta.getInt(R.styleable.LineChartView_lcv_animation_duration, 1000);
+        //xAxis text array
+        final int textArrayResId = ta.getResourceId(R.styleable.LineChartView_lcv_xAxis_textArray, -1);
+        if (textArrayResId != -1) {
+            mXAxisTextArray = mContext.getResources().getStringArray(textArrayResId);
+        }
+        mCanceledOnTouchOutside = ta.getBoolean(R.styleable.LineChartView_lcv_canceledOnTouchOutside, false);
         ta.recycle();
     }
 
@@ -249,11 +262,8 @@ public class LineChartView extends AbsChartView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mLineChartDataList != null && !mLineChartDataList.isEmpty()) {
-            final int itemMinWidth = getItemMinWidth();
-            if (mItemWidth < itemMinWidth) {
-                mItemWidth = itemMinWidth;
-            }
-            mNeedWidth = mLeftMargin + getTextMaxWidth() + mDashedYAxisMargin + mItemWidth * mLineChartDataList.size();
+            initItemMinWidth();
+            initNeedWidth();
             int startDy = getStartDy();
             int ySpace = getYSpace();
             drawYAxis(canvas, startDy, ySpace);
@@ -275,17 +285,35 @@ public class LineChartView extends AbsChartView {
         }
     }
 
-    private int getItemMinWidth() {
-        int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-        int divisor = mLineChartDataList.size() - 1 <= 0 ? 1 : mLineChartDataList.size() - 1;
-        return (screenWidth - getStartDx() - mRightMargin) / divisor;
+    private void initItemMinWidth() {
+        int screenWidth = ChartUtils.getScreenWidth(mContext);
+        int itemMinWidth;
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+            int divisor = mXAxisTextArray.length - 1 <= 0 ? 1 : mXAxisTextArray.length - 1;
+            itemMinWidth = (screenWidth - getStartDx() - mRightMargin) / divisor;
+        } else {
+            int divisor = mLineChartDataList.size() - 1 <= 0 ? 1 : mLineChartDataList.size() - 1;
+            itemMinWidth = (screenWidth - getStartDx() - mRightMargin) / divisor;
+        }
+        if (mItemWidth < itemMinWidth) {
+            mItemWidth = itemMinWidth;
+        }
+    }
+
+    private void initNeedWidth() {
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+            mNeedWidth = mLeftMargin + getTextMaxWidth() + mDashedYAxisMargin + mItemWidth * mXAxisTextArray.length;
+        } else {
+            mNeedWidth = mLeftMargin + getTextMaxWidth() + mDashedYAxisMargin + mItemWidth * mLineChartDataList.size();
+        }
     }
 
     /*画y轴刻度文字*/
     private void drawYAxis(Canvas canvas, int startDy, int ySpace) {
         int average = mMaxGradient / mLineNumber;
+        String unit = TextUtils.isEmpty(mUnit) ? "" : mUnit;
         for (int i = 0; i <= mLineNumber; i++) {
-            canvas.drawText(String.valueOf(average * i), mLeftMargin, startDy - i * ySpace, mYAxisTextPaint);
+            canvas.drawText((average * i) + unit, mLeftMargin, startDy - i * ySpace, mYAxisTextPaint);
         }
     }
 
@@ -318,39 +346,44 @@ public class LineChartView extends AbsChartView {
     /*画x轴刻度*/
     private void drawXAxis(Canvas canvas, int startX, int startDy) {
         //画x轴刻度
-        for (int i = 0; i < mLineChartDataList.size(); i++) {
-            String text = mLineChartDataList.get(i).getXAxisText();
-            int textWidth = ChartUtils.getTextWidth(text, mXAxisTextPaint);
-            float x = startX + mItemWidth * i - textWidth / 2f;
-            float y = startDy + mDashedXAxisMargin;
-            /* staticLayout支持换行，它既可以为文字设置宽度上限来让文字自动换行，也会在 \n 处主动换行。
-             * width 是文字区域的宽度，文字到达这个宽度后就会自动换行；
-             * align 是文字的对齐方向；
-             * spacingmult 是行间距的倍数，通常情况下填 1 就好；
-             * spacingadd 是行间距的额外增加值，通常情况下填 0 就好；
-             * includeadd 是指是否在文字上下添加额外的空间，来避免某些过高的字符的绘制出现越界。
-             * */
-            StaticLayout staticLayout = new StaticLayout(text, mXAxisTextPaint, textWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
-            canvas.save();
-            canvas.translate(x, y);
-            staticLayout.draw(canvas);
-            canvas.restore();
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+            for (int i = 0; i < mXAxisTextArray.length; i++) {
+                drawXAxisText(canvas, mXAxisTextArray[i], startX, startDy, i);
+            }
+        } else {
+            for (int i = 0; i < mLineChartDataList.size(); i++) {
+                drawXAxisText(canvas, mLineChartDataList.get(i).getXAxisText(), startX, startDy, i);
+            }
         }
+    }
+
+    private void drawXAxisText(Canvas canvas, String text, int startX, int startDy, int index) {
+        int textWidth = ChartUtils.getTextWidth(text, mXAxisTextPaint);
+        float x = startX + mItemWidth * index - textWidth / 2f;
+        float y = startDy + mDashedXAxisMargin;
+        /* staticLayout支持换行，它既可以为文字设置宽度上限来让文字自动换行，也会在 \n 处主动换行。
+         * width 是文字区域的宽度，文字到达这个宽度后就会自动换行；
+         * align 是文字的对齐方向；
+         * spacingmult 是行间距的倍数，通常情况下填 1 就好；
+         * spacingadd 是行间距的额外增加值，通常情况下填 0 就好；
+         * includeadd 是指是否在文字上下添加额外的空间，来避免某些过高的字符的绘制出现越界。
+         * */
+        StaticLayout staticLayout = new StaticLayout(text, mXAxisTextPaint, textWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
+        canvas.save();
+        canvas.translate(x, y);
+        staticLayout.draw(canvas);
+        canvas.restore();
     }
 
     /*画折线*/
     private void drawPolyline(Canvas canvas, int startDx) {
+        if (!mDisplayPolylineZero && getMaxValueFromData() <= 0) return;
         Paint paint = getPolyLinePaint();
         int start = 0;
         for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
             float startX = mItemWidth * (start) + startDx;
             float startY = getPointY(mLineChartDataList.get(start).getValue());
-            float stopX;
-            if (i == mLineChartDataList.size() - 1) {
-                stopX = getEndX();
-            } else {
-                stopX = mItemWidth * i + startDx;
-            }
+            float stopX = mItemWidth * i + startDx;
             float stopY = getPointY(mLineChartDataList.get(i).getValue());
             canvas.drawLine(startX, startY, stopX, stopY, paint);
             start = i;
@@ -390,14 +423,11 @@ public class LineChartView extends AbsChartView {
         Path path = new Path();
         float start = startDx, end = startDx;
         for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
-            final float x = mItemWidth * i + startDx;
+            final float x = startDx + mItemWidth * i;
             final double value = mLineChartDataList.get(i).getValue();
             if (i == 0) {
                 start = x;
                 path.moveTo(x, getPointY(value));
-            } else if (i == size - 1) {
-                end = getEndX();
-                path.lineTo(end, getPointY(value));
             } else {
                 end = x;
                 path.lineTo(end, getPointY(value));
@@ -428,9 +458,6 @@ public class LineChartView extends AbsChartView {
         if (mSelectPosition >= 0 && mSelectPosition < mLineChartDataList.size()) {
             Paint paint = getSelectCeilPaint();
             float dx = startDx + mItemWidth * mSelectPosition;
-            if (mSelectPosition == mLineChartDataList.size() - 1) {
-                dx = getEndX();
-            }
             drawVerticalLine(canvas, dx, mOldTopSpace + mDescriptionHeight + mDescriptionArrowSize, dx, getStartDy(), paint);
             drawPoint(canvas, dx, getPointY(mLineChartDataList.get(mSelectPosition).getValue()), paint);
             drawPointDescription(canvas, startDx, mSelectPosition);
@@ -468,7 +495,7 @@ public class LineChartView extends AbsChartView {
         if (mDescriptionTypeface != null) {
             paint.setTypeface(mDescriptionTypeface);
         }
-        int textWidth = ChartUtils.getTextWidth(getDescription(position), paint) + ovalSize + mDescriptionPadding * 3;
+        int textWidth = ChartUtils.getTextWidth(text, paint) + ovalSize + mDescriptionPadding * 3;
         //画箭头框
         Path path = new Path();
         final float startY = mOldTopSpace;
@@ -484,7 +511,7 @@ public class LineChartView extends AbsChartView {
             path.close();
             canvas.drawPath(path, paint);
         } else if (position == mLineChartDataList.size() - 1) {  //最后一个位置
-            final int dx = getEndX();
+            final int dx = startDx + position * mItemWidth;
             textLeft = dx - textWidth;
             path.moveTo(dx - textWidth, startY); //起始点
             path.lineTo(dx, startY); //终点
@@ -537,20 +564,31 @@ public class LineChartView extends AbsChartView {
     }
 
     /*获取描述文本*/
-    public String getDescription(int position) {
-        if (mLineChartDataList == null || mLineChartDataList.isEmpty()) {
-            return "";
-        }
-        if (position >= 0 && position < mLineChartDataList.size()) {
-            LineChartData data = mLineChartDataList.get(position);
-            if (TextUtils.isEmpty(data.getDescription())) {
-                String axisText = data.getXAxisText();
-                String splitText = "：" + data.getValue();
-                return TextUtils.isEmpty(axisText) ? "" + splitText : axisText + splitText;
+    private String getDescription(int position) {
+        if (position >= 0 && position < mLineChartDataList.size() && !TextUtils.isEmpty(mLineChartDataList.get(position).getDescription())) {
+            return mLineChartDataList.get(position).getDescription();
+        } else {
+            String description = "";
+            if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+                if (position >= 0 && position < mXAxisTextArray.length) {
+                    description += mXAxisTextArray[position];
+                }
+                if (position >= 0 && position < mLineChartDataList.size()) {
+                    description += "：" + mLineChartDataList.get(position).getValue();
+                    description += TextUtils.isEmpty(mUnit) ? "" : mUnit;
+                }
+            } else {
+                if (position >= 0 && position < mLineChartDataList.size()) {
+                    LineChartData data = mLineChartDataList.get(position);
+                    String axisText = data.getXAxisText();
+                    String splitText = "：" + data.getValue();
+                    description = TextUtils.isEmpty(axisText) ? "" + splitText : axisText + splitText;
+                    description += TextUtils.isEmpty(mUnit) ? "" : mUnit;
+                    return description;
+                }
             }
-            return data.getDescription();
+            return description;
         }
-        return "";
     }
 
     /*数值对应的y坐标*/
@@ -559,7 +597,6 @@ public class LineChartView extends AbsChartView {
     }
 
     /*图表高度*/
-    @SuppressWarnings("unused")
     public int getChartHeight() {
         return mHeight - mTopMargin - mBottomSpace - mBottomMargin;
     }
@@ -569,9 +606,16 @@ public class LineChartView extends AbsChartView {
         return mLeftMargin + mDashedYAxisMargin + getTextMaxWidth();
     }
 
+    /*最大值文本宽度*/
     private int getTextMaxWidth() {
         if (mMaxGradient > 0) {
-            return ChartUtils.getTextWidth(String.valueOf(mMaxGradient), mYAxisTextPaint);
+            String text;
+            if (!TextUtils.isEmpty(mUnit)) {
+                text = mMaxGradient + mUnit;
+            } else {
+                text = String.valueOf(mMaxGradient);
+            }
+            return ChartUtils.getTextWidth(text, mYAxisTextPaint);
         }
         return 0;
     }
@@ -592,8 +636,11 @@ public class LineChartView extends AbsChartView {
     }
 
     private int getLastXTextWidth() {
-        if (mLineChartDataList == null || mLineChartDataList.isEmpty()) return 0;
-        return ChartUtils.getTextWidth(mLineChartDataList.get(mLineChartDataList.size() - 1).getXAxisText(), mXAxisTextPaint);
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
+            return ChartUtils.getTextWidth(mXAxisTextArray[mXAxisTextArray.length - 1], mXAxisTextPaint);
+        } else {
+            return ChartUtils.getTextWidth(mLineChartDataList.get(mLineChartDataList.size() - 1).getXAxisText(), mXAxisTextPaint);
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -613,7 +660,9 @@ public class LineChartView extends AbsChartView {
                             setSelectPosition(i);
                             break;
                         } else {
-                            setSelectPosition(-1);
+                            if (mCanceledOnTouchOutside) {
+                                setSelectPosition(-1);
+                            }
                         }
                     }
                 }
@@ -629,15 +678,38 @@ public class LineChartView extends AbsChartView {
     }
 
     public FluentInitializer withData(@Nullable List<LineChartData> data) {
-        return new FluentInitializer(data);
+        return withData(data, null);
+    }
+
+    public FluentInitializer withData(@Nullable List<LineChartData> data, @ArrayRes int arrayId) {
+        return withData(data, mContext.getResources().getStringArray(arrayId));
+    }
+
+    public FluentInitializer withData(@Nullable List<LineChartData> data, @Nullable String[] xAxisTextArray) {
+        return withData(data, xAxisTextArray, null);
+    }
+
+    public FluentInitializer withData(@Nullable List<LineChartData> data, @ArrayRes int arrayId, String unit) {
+        return withData(data, mContext.getResources().getStringArray(arrayId), unit);
+    }
+
+    /**
+     * @param data           数据源
+     * @param xAxisTextArray x轴文字刻度数组
+     * @param unit           单位（y轴需要显示的单位文字）
+     */
+    public FluentInitializer withData(@Nullable List<LineChartData> data, @Nullable String[] xAxisTextArray, @Nullable String unit) {
+        return new FluentInitializer(data, xAxisTextArray, unit);
     }
 
     /*用于多属性初始化*/
     public class FluentInitializer {
         List<LineChartData> mData;
 
-        FluentInitializer(@Nullable List<LineChartData> data) {
+        FluentInitializer(@Nullable List<LineChartData> data, @Nullable String[] xAxisTextArray, @Nullable String unit) {
             this.mData = data;
+            mXAxisTextArray = xAxisTextArray;
+            mUnit = unit;
         }
 
         /*设置成能被10整除的数，否则计算不精准*/
@@ -761,6 +833,12 @@ public class LineChartView extends AbsChartView {
         /*是否展示折线*/
         public FluentInitializer polylineEnabled(boolean isPolylineEnabled) {
             mPolylineEnabled = isPolylineEnabled;
+            return this;
+        }
+
+        /*当数据中最大值为0时是否展示折线*/
+        public FluentInitializer polylineDisplayZero(boolean isDisplayPolylineZero) {
+            mDisplayPolylineZero = isDisplayPolylineZero;
             return this;
         }
 
@@ -904,6 +982,11 @@ public class LineChartView extends AbsChartView {
 
         public FluentInitializer animationDuration(int duration) {
             mAnimationDuration = duration;
+            return this;
+        }
+
+        public FluentInitializer canceledOnTouchOutside(boolean isCanceled) {
+            mCanceledOnTouchOutside = isCanceled;
             return this;
         }
 

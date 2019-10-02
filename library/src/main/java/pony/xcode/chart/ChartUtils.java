@@ -3,6 +3,9 @@ package pony.xcode.chart;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 
@@ -35,7 +38,10 @@ class ChartUtils {
         return (int) (0.5f + dpValue * context.getResources().getDisplayMetrics().density);
     }
 
-    static int getTextWidth(String text, Paint paint) {
+    static int getTextWidth(@Nullable String text, Paint paint) {
+        if (TextUtils.isEmpty(text)) {
+            return 0;
+        }
         Rect rect = new Rect();
         paint.getTextBounds(text, 0, text.length(), rect);
         return rect.width();

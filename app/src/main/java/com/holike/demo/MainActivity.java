@@ -1,5 +1,6 @@
 package com.holike.demo;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -49,22 +50,29 @@ public class MainActivity extends AppCompatActivity {
         picChart.setPieChartDataList(list);
         LineChartView lineChartView = findViewById(R.id.lineChartView);
         List<LineChartData> data = new ArrayList<>();
-        data.add(new LineChartData("1\n月", 1));
-        data.add(new LineChartData("2\n月", 2));
-        data.add(new LineChartData("3\n月", 3.5));
-        data.add(new LineChartData("4\n月", 14));
-        data.add(new LineChartData("5\n月", 13));
-        data.add(new LineChartData("6\n月", 20));
-        data.add(new LineChartData("7\n月", 25));
-        data.add(new LineChartData("8\n月", 7.8));
-        data.add(new LineChartData("9\n月", 29));
-        data.add(new LineChartData("10\n月", 30));
-        data.add(new LineChartData("11\n月", 120));
-        data.add(new LineChartData("12\n月", 100));
-        lineChartView.withData(data).yScaleNum(5)
+//        data.add(new LineChartData(1));
+//        data.add(new LineChartData(2));
+//        data.add(new LineChartData(3.5));
+//        data.add(new LineChartData(14));
+//        data.add(new LineChartData(13));
+//        data.add(new LineChartData(20));
+//        data.add(new LineChartData(25));
+//        data.add(new LineChartData(7.8));
+//        data.add(new LineChartData(29));
+//        data.add(new LineChartData(35));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        data.add(new LineChartData(0));
+        lineChartView.withData(data, getResources().getStringArray(R.array.line_chart_months), "万").yScaleNum(5)
                 .descriptionOvalSize(getResources().getDimensionPixelSize(R.dimen.lineChart_oval_size))
                 .descriptionArrowSize(getResources().getDimensionPixelSize(R.dimen.lineChart_arrow_size))
-                .xAxisTypeface(Typeface.defaultFromStyle(Typeface.ITALIC))
                 .yAxisTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC))
                 .descriptionTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                 .start();
@@ -72,13 +80,13 @@ public class MainActivity extends AppCompatActivity {
         params.height = 600;
         BarChartView barChartView = findViewById(R.id.barChartView);
         List<BarChartData> barChartData = new ArrayList<>();
-        barChartData.add(new BarChartData("08.25\n至\n08.31", 19.1));
-        barChartData.add(new BarChartData("09.01\n至\n09.07", 17.0));
-        barChartData.add(new BarChartData("09.08\n至\n09.14", 4.2));
-        barChartData.add(new BarChartData("09.15\n至\n09.21", 14));
-        barChartData.add(new BarChartData("09.22\n至\n09.29", 13));
-        barChartData.add(new BarChartData("09.30\n至\n10.06", 100));
-        barChartView.withData(barChartData).unit("%").start();
+        barChartData.add(new BarChartData(19.1));
+        barChartData.add(new BarChartData(17.0));
+        barChartData.add(new BarChartData(4.2));
+        barChartData.add(new BarChartData(14));
+        barChartData.add(new BarChartData(13));
+        barChartData.add(new BarChartData(100));
+        barChartView.withData(barChartData, R.array.bar_chart_months, "%").start();
     }
 
     static class ColorRandom {
