@@ -155,6 +155,7 @@ public class BarChartView extends AbsChartView {
         mBarChartDataList = new ArrayList<>(dataList);
         int maxValue = getMaxValueFromData();
         mMaxGradient = ChartUtils.getMaxGraded(maxValue);
+        setScrollX(0);
         validateAndUpdate();
     }
 

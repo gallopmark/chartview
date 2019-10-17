@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.LinearLayout;
 
 
@@ -20,7 +21,8 @@ import pony.xcode.chart.data.LineChartData;
 import pony.xcode.chart.data.PieChartData;
 
 public class MainActivity extends AppCompatActivity {
-
+    private BarChartView barChartView;
+    private List<BarChartData> barChartData = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 .start();
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) lineChartView.getLayoutParams();
         params.height = 600;
-        BarChartView barChartView = findViewById(R.id.barChartView);
-        List<BarChartData> barChartData = new ArrayList<>();
+        barChartView = findViewById(R.id.barChartView);
         barChartData.add(new BarChartData(1012.1));
         barChartData.add(new BarChartData(138.8));
         barChartData.add(new BarChartData(3467.2));
@@ -83,6 +84,19 @@ public class MainActivity extends AppCompatActivity {
         barChartView.withData(barChartData, R.array.line_chart_months)
                 .barValueAsInt(true)
                 .start();
+        runnable();
+    }
+
+    private void runnable() {
+        barChartView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                barChartView.withData(barChartData, R.array.line_chart_months)
+                        .barValueAsInt(true)
+                        .start();
+                runnable();
+            }
+        }, 4000);
     }
 
     static class ColorRandom {
