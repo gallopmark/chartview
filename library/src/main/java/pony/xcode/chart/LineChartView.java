@@ -152,7 +152,7 @@ public class LineChartView extends AbsChartView {
         mLineNumber = ta.getInt(R.styleable.LineChartView_lcv_yScaleNum, mYScaleNum);
         //polyline
         mPolylineEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_enabled, true);
-        mDisplayPolylineZero = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_display_zero, true);
+        mDisplayPolylineZero = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_display_zero, false);
         mPolylineWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyline_width, ChartUtils.dp2px(mContext, 1));
         mPolylineColor = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyline_color, Color.parseColor("#ffff00"));
         //trace
@@ -595,7 +595,7 @@ public class LineChartView extends AbsChartView {
 
     /*数值对应的y坐标*/
     private float getPointY(double value) {
-        return (float) (getStartDy() - (getStartDy() - mTopMargin) * ChartUtils.div(value, mMaxGradient) * mProgress);
+        return (float) (getStartDy() - (getStartDy() - mTopMargin) * (value / mMaxGradient) * mProgress);
     }
 
     /*图表高度*/

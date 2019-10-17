@@ -104,19 +104,24 @@ public class PieChartView extends View {
     }
 
     private void calculation() {
-        float total = 0;
-        for (PieChartData data : mPieChartDataList) {
-            total += data.getValue();
-        }
         float pieStart = mStartAngle;
+        float total = getTotalCount();
         for (PieChartData data : mPieChartDataList) {
-            final float percent = ChartUtils.div(data.getValue(), total);
+            final float percent = (data.getValue() / total);
             data.setPercent(percent);
             data.setPieStart(pieStart);
             final float pieSweep = percent * TOTAL_DEGREE;
             data.setPieSweep(pieSweep);
             pieStart += pieSweep;
         }
+    }
+
+    private float getTotalCount() {
+        float total = 0;
+        for (PieChartData data : mPieChartDataList) {
+            total += data.getValue();
+        }
+        return total;
     }
 
     @Override
