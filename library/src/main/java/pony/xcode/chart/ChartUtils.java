@@ -67,4 +67,9 @@ class ChartUtils {
         //默认保留两位会有错误，这里设置保留小数点后4位
         return b1.divide(b2, 2, BigDecimal.ROUND_HALF_UP).floatValue();
     }
+
+    /*保留两位小数输出*/
+    static double doubleValue(double source) {
+        return new BigDecimal(Double.toString(source)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
 }

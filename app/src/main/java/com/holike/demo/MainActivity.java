@@ -1,6 +1,5 @@
 package com.holike.demo;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -8,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
-import com.holike.demo.widget.PieChartView2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,26 +25,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PieChartView2 view = findViewById(R.id.pcv);
-        List<PieChartView2.PieModel> pieModelList = new ArrayList<>();
         ColorRandom colorRandom = new ColorRandom(10);
-        for (int i = 0; i < 5; i++) {
-            int colors = (int) colorRandom.getColors().get(i);
-            if (i == 0) {
-                pieModelList.add(new PieChartView2.PieModel(colors, 0.1f, true));
-            } else {
-                pieModelList.add(new PieChartView2.PieModel(colors, 0.3f));
-            }
-        }
-        view.setData(pieModelList);
         PieChartView picChart = findViewById(R.id.picChart);
         List<PieChartData> list = new ArrayList<>();
         list.add(new PieChartData("1", 100, (int) colorRandom.getColors().get(0)));
-        list.add(new PieChartData("2", 120, (int) colorRandom.getColors().get(1)));
-        list.add(new PieChartData("3", 150, (int) colorRandom.getColors().get(2)));
-        list.add(new PieChartData("4", 200, (int) colorRandom.getColors().get(3)));
-        list.add(new PieChartData("5", 250, (int) colorRandom.getColors().get(4)));
-        list.add(new PieChartData("6", 300, (int) colorRandom.getColors().get(5)));
+        list.add(new PieChartData("2", 200, (int) colorRandom.getColors().get(1)));
+        list.add(new PieChartData("3", 300, (int) colorRandom.getColors().get(2)));
+        list.add(new PieChartData("4", 400, (int) colorRandom.getColors().get(3)));
+        list.add(new PieChartData("5", 500, (int) colorRandom.getColors().get(4)));
+        list.add(new PieChartData("6", 600, (int) colorRandom.getColors().get(5)));
+        list.add(new PieChartData("7", 700, (int) colorRandom.getColors().get(6)));
+        list.add(new PieChartData("8", 820, (int) colorRandom.getColors().get(7)));
+        list.add(new PieChartData("9", 900, (int) colorRandom.getColors().get(8)));
+        list.add(new PieChartData("10", 1000, (int) colorRandom.getColors().get(9)));
         picChart.setPieChartDataList(list);
         LineChartView lineChartView = findViewById(R.id.lineChartView);
         List<LineChartData> data = new ArrayList<>();
@@ -70,23 +61,28 @@ public class MainActivity extends AppCompatActivity {
         data.add(new LineChartData(0));
         data.add(new LineChartData(0));
         data.add(new LineChartData(0));
-        lineChartView.withData(data, getResources().getStringArray(R.array.line_chart_months), "万").yScaleNum(5)
+        lineChartView.withData(data, getResources().getStringArray(R.array.line_chart_months)).yScaleNum(5)
                 .descriptionOvalSize(getResources().getDimensionPixelSize(R.dimen.lineChart_oval_size))
                 .descriptionArrowSize(getResources().getDimensionPixelSize(R.dimen.lineChart_arrow_size))
-                .yAxisTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC))
                 .descriptionTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                 .start();
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) lineChartView.getLayoutParams();
         params.height = 600;
         BarChartView barChartView = findViewById(R.id.barChartView);
         List<BarChartData> barChartData = new ArrayList<>();
-        barChartData.add(new BarChartData(19.1));
-        barChartData.add(new BarChartData(17.0));
-        barChartData.add(new BarChartData(4.2));
-        barChartData.add(new BarChartData(14));
-        barChartData.add(new BarChartData(13));
-        barChartData.add(new BarChartData(100));
-        barChartView.withData(barChartData, R.array.bar_chart_months, "%").start();
+        barChartData.add(new BarChartData(1012.1));
+        barChartData.add(new BarChartData(138.8));
+        barChartData.add(new BarChartData(3467.2));
+        barChartData.add(new BarChartData(7.9));
+        barChartData.add(new BarChartData(9.3));
+        barChartData.add(new BarChartData(4.6));
+        barChartData.add(new BarChartData(15.5));
+        barChartData.add(new BarChartData(104.3));
+        barChartData.add(new BarChartData(30.3));
+        barChartData.add(new BarChartData(7.7));
+        barChartView.withData(barChartData, R.array.line_chart_months)
+                .barValueAsInt(true)
+                .start();
     }
 
     static class ColorRandom {

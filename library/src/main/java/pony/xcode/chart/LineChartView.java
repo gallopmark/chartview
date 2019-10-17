@@ -135,7 +135,7 @@ public class LineChartView extends AbsChartView {
         mItemWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_itemWidth, 0);
         //margin
         mLeftMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_leftMargin, ChartUtils.dp2px(mContext, 12));
-        mRightMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_rightMargin, ChartUtils.dp2px(mContext, 20));
+        mRightMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_rightMargin, ChartUtils.dp2px(mContext, 12));
         mTopMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_topMargin, ChartUtils.sp2px(mContext, 0));
         mBottomMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_bottomMargin, 0);
         mOldTopSpace = mTopMargin;
@@ -201,6 +201,7 @@ public class LineChartView extends AbsChartView {
         mYAxisTextPaint.setAntiAlias(true);
         mYAxisTextPaint.setTextSize(mYAxisTextSize);
         mYAxisTextPaint.setColor(mYAxisTextColor);
+        mYAxisTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         mXAxisTextPaint = new TextPaint();
         mXAxisTextPaint.setStyle(Paint.Style.FILL);
@@ -287,16 +288,16 @@ public class LineChartView extends AbsChartView {
 
     private void initItemMinWidth() {
         int screenWidth = ChartUtils.getScreenWidth(mContext);
-        int itemMinWidth;
+        float itemMinWidth;
         if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
             int divisor = mXAxisTextArray.length - 1 <= 0 ? 1 : mXAxisTextArray.length - 1;
-            itemMinWidth = (screenWidth - getStartDx() - mRightMargin) / divisor;
+            itemMinWidth = (screenWidth - getStartDx() - (mRightMargin + getLastXTextWidth() / 2f)) / (float) divisor;
         } else {
             int divisor = mLineChartDataList.size() - 1 <= 0 ? 1 : mLineChartDataList.size() - 1;
-            itemMinWidth = (screenWidth - getStartDx() - mRightMargin) / divisor;
+            itemMinWidth = (screenWidth - getStartDx() - (mRightMargin + getLastXTextWidth() / 2f)) / (float) divisor;
         }
         if (mItemWidth < itemMinWidth) {
-            mItemWidth = itemMinWidth;
+            mItemWidth = (int) Math.floor(itemMinWidth);
         }
     }
 
@@ -632,7 +633,7 @@ public class LineChartView extends AbsChartView {
 
     /*x轴最右端*/
     private int getEndX() {
-        return mNeedWidth - mRightMargin - mItemWidth + getLastXTextWidth();
+        return (int) (mNeedWidth - mRightMargin - getLastXTextWidth() / 2f);
     }
 
     private int getLastXTextWidth() {

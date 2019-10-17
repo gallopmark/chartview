@@ -65,6 +65,7 @@ public class BarChartView extends AbsChartView {
     private DashPathEffect mDashPathEffect; //虚线效果
     //value
     private boolean mBarValueEnabled; //是否在柱状图上展示数值
+    private boolean mBarValueAsInt; //数值是否强转为int
     private int mBarValueMargin; //间距
     private int mBarValueTextColor; //数值文字颜色
     private int mBarValueTextSize; //数值文字大小
@@ -351,11 +352,23 @@ public class BarChartView extends AbsChartView {
             Paint paint = getBarValuePaint();
             String unit = mBarValueUnitEdge ? getUnit() : "";
             for (int i = 0; i < mBarChartDataList.size(); i++) {
+                String valueText;
+                String description = mBarChartDataList.get(i).getDescription();
                 double value = mBarChartDataList.get(i).getValue();
+                if (!TextUtils.isEmpty(description)) {
+                    valueText = description;
+                } else {
+                    if (mBarValueAsInt) {
+                        valueText = String.valueOf((int) value);
+                    } else {
+                        valueText = String.valueOf(ChartUtils.doubleValue(value));
+                    }
+                }
+                valueText += unit;
                 float x = startDx + (mDividerWidth + mBarWidth) * i;
                 float y = getPointY(value) - mBarValueMargin;
                 RectF rectF = new RectF(x, y, x + mBarWidth, 0);
-                canvas.drawText(value + unit, rectF.centerX(), y, paint);
+                canvas.drawText(valueText, rectF.centerX(), y, paint);
             }
         }
     }
@@ -384,7 +397,7 @@ public class BarChartView extends AbsChartView {
 
     /*数值对应的y坐标*/
     private float getPointY(double value) {
-        return (float) (getStartDy() - (getStartDy() - mTopMargin) * ChartUtils.div(value, mMaxGradient) * mProgress);
+        return (float) (getStartDy() - (getStartDy() - mTopMargin) * (value / mMaxGradient) * mProgress);
     }
 
     /*图表高度*/
@@ -588,6 +601,11 @@ public class BarChartView extends AbsChartView {
             return this;
         }
 
+        public FluentInitializer barValueAsInt(boolean isBarValueAsInt) {
+            mBarValueAsInt = isBarValueAsInt;
+            return this;
+        }
+
         public FluentInitializer barValueMargin(int margin) {
             mBarValueMargin = margin;
             return this;
@@ -618,8 +636,8 @@ public class BarChartView extends AbsChartView {
             return this;
         }
 
-        public FluentInitializer barValueEdge(boolean barValueEdge) {
-            mBarValueUnitEdge = barValueEdge;
+        public FluentInitializer barValueUnitEdge(boolean includeEdge) {
+            mBarValueUnitEdge = includeEdge;
             return this;
         }
 
