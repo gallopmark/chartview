@@ -91,6 +91,24 @@ public class MainActivity extends AppCompatActivity {
         barChartView.postDelayed(new Runnable() {
             @Override
             public void run() {
+                barChartData = new ArrayList<>();
+                barChartData.add(new BarChartData(1012.1));
+                barChartData.add(new BarChartData(138.8));
+                barChartData.add(new BarChartData(3467.2));
+                barChartData.add(new BarChartData(7.9));
+                barChartData.add(new BarChartData(9.3));
+                barChartData.add(new BarChartData(4.6));
+                barChartData.add(new BarChartData(15.5));
+                barChartData.add(new BarChartData(104.3));
+                barChartData.add(new BarChartData(30.3));
+                barChartData.add(new BarChartData(7.7));
+                barChartData.add(new BarChartData(138.8));
+                barChartData.add(new BarChartData(3467.2));
+                barChartData.add(new BarChartData(7.9));
+                barChartData.add(new BarChartData(9.3));
+                barChartData.add(new BarChartData(4.6));
+                barChartData.add(new BarChartData(15.5));
+                barChartData.add(new BarChartData(104.3));
                 barChartView.withData(barChartData, R.array.line_chart_months)
                         .barValueAsInt(true)
                         .start();

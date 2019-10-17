@@ -50,7 +50,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:bcv_include_leftEdge="false"
-        app:bcv_display_animation="false"
         app:bcv_include_rightEdge="false" />
 
 </LinearLayout>

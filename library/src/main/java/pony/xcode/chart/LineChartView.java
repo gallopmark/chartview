@@ -223,7 +223,7 @@ public class LineChartView extends AbsChartView {
         this.mLineChartDataList = new ArrayList<>(dataList);
         int maxValue = getMaxValueFromData();
         mMaxGradient = ChartUtils.getMaxGraded(maxValue);
-        setScrollX(0);
+        resetInitialStatus();
         validateAndUpdate();
     }
 
