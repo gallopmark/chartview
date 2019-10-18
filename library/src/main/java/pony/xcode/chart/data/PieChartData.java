@@ -1,6 +1,7 @@
 package pony.xcode.chart.data;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 
 //饼状图数据实体类
 public class PieChartData {
@@ -22,7 +23,7 @@ public class PieChartData {
         this.colorId = colorId;
     }
 
-    public PieChartData(String type, float value, @ColorInt int colorId) {
+    public PieChartData(@Nullable String type, float value, @ColorInt int colorId) {
         this.type = type;
         this.value = value;
         this.colorId = colorId;

@@ -1,25 +1,28 @@
 package pony.xcode.chart.data;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /*折线图数据实体类*/
 public class LineChartData extends AbsChartData {
 
     public LineChartData(double value) {
-        super(null, value);
+        super("", value);
     }
 
-    public LineChartData(String xAxisText, double value) {
+    public LineChartData(@NonNull String xAxisText, double value) {
         super(xAxisText, value);
     }
 
-    public LineChartData(String xAxisText, double value, String description) {
+    public LineChartData(@NonNull String xAxisText, double value, @Nullable String description) {
         super(xAxisText, value, description);
     }
 
-    public LineChartData(String xAxisText, double value, boolean isClickable) {
+    public LineChartData(@NonNull String xAxisText, double value, boolean isClickable) {
         super(xAxisText, value, isClickable);
     }
 
-    public LineChartData(String xAxisText, double value, String description, boolean isClickable) {
+    public LineChartData(@NonNull String xAxisText, double value, @Nullable String description, boolean isClickable) {
         super(xAxisText, value, description, isClickable);
     }
 }

@@ -370,7 +370,8 @@ public class LineChartView extends AbsChartView {
          * spacingadd 是行间距的额外增加值，通常情况下填 0 就好；
          * includeadd 是指是否在文字上下添加额外的空间，来避免某些过高的字符的绘制出现越界。
          * */
-        StaticLayout staticLayout = new StaticLayout(text, mXAxisTextPaint, textWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
+        String source = TextUtils.isEmpty(text) ? "" : text;
+        StaticLayout staticLayout = new StaticLayout(source, mXAxisTextPaint, textWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
         canvas.save();
         canvas.translate(x, y);
         staticLayout.draw(canvas);
