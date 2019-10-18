@@ -42,13 +42,17 @@
         app:lcv_description_oval_size="16dp"
         app:lcv_description_textSize="12sp"
         app:lcv_display_animation="true"
-        android:visibility="gone"
         app:lcv_polyline_display_zero="false" />
 
     <pony.xcode.chart.BarChartView
         android:id="@+id/barChartView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:bcv_bottom_space="100dp"
+        app:bcv_xAxis_textLineCount="2"
+        app:bcv_subXAxis_textSize="10sp"
+        app:bcv_subXAxis_textColor="@color/colorAccent"
+        app:bvb_subXAxis_textMargin="6dp"
         app:bcv_include_leftEdge="false"
         app:bcv_include_rightEdge="false" />
 

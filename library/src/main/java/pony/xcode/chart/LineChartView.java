@@ -127,7 +127,6 @@ public class LineChartView extends AbsChartView {
     public LineChartView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         obtainValues(attrs);
-        initPaint();
     }
 
     private void obtainValues(@Nullable AttributeSet attrs) {
@@ -196,19 +195,6 @@ public class LineChartView extends AbsChartView {
         ta.recycle();
     }
 
-    private void initPaint() {
-        mYAxisTextPaint = new TextPaint();
-        mYAxisTextPaint.setAntiAlias(true);
-        mYAxisTextPaint.setTextSize(mYAxisTextSize);
-        mYAxisTextPaint.setColor(mYAxisTextColor);
-        mYAxisTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-
-        mXAxisTextPaint = new TextPaint();
-        mXAxisTextPaint.setStyle(Paint.Style.FILL);
-        mXAxisTextPaint.setColor(mXAxisTextColor);
-        mXAxisTextPaint.setAntiAlias(true);
-        mXAxisTextPaint.setTextSize(mXAxisTextSize);
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -228,6 +214,7 @@ public class LineChartView extends AbsChartView {
     }
 
     private void validateAndUpdate() {
+        initPaint();
         if (mDisplayAnimation) {
             if (mValueAnimation != null) {
                 mValueAnimation.end();
@@ -258,6 +245,20 @@ public class LineChartView extends AbsChartView {
             }
         }
         return max;
+    }
+
+    private void initPaint() {
+        mYAxisTextPaint = new TextPaint();
+        mYAxisTextPaint.setAntiAlias(true);
+        mYAxisTextPaint.setTextSize(mYAxisTextSize);
+        mYAxisTextPaint.setColor(mYAxisTextColor);
+        mYAxisTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+        mXAxisTextPaint = new TextPaint();
+        mXAxisTextPaint.setStyle(Paint.Style.FILL);
+        mXAxisTextPaint.setColor(mXAxisTextColor);
+        mXAxisTextPaint.setAntiAlias(true);
+        mXAxisTextPaint.setTextSize(mXAxisTextSize);
     }
 
     @Override
@@ -635,6 +636,10 @@ public class LineChartView extends AbsChartView {
 
     /*x轴最右端*/
     private int getEndX() {
+        final int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+        if (mNeedWidth < screenWidth) {
+            return (int) (screenWidth - mRightMargin - getLastXTextWidth() / 2f);
+        }
         return (int) (mNeedWidth - mRightMargin - getLastXTextWidth() / 2f);
     }
 

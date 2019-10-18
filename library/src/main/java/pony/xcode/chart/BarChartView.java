@@ -55,6 +55,12 @@ public class BarChartView extends AbsChartView {
     private TextPaint mXAxisTextPaint;
     private int mXAxisTextColor; //x轴文字颜色
     private int mXAxisTextSize; //x轴文字大小
+    private int mXAxisTextLineCount; //x轴文本行数（控制sub文字显示的位置）
+    //text x sub
+    private TextPaint mSubXAxisTextPaint;
+    private int mSubXAxisTextColor;
+    private int mSubXAxisTextSize;
+    private int mSubXAxisMargin;
     //text y
     private TextPaint mYAxisTextPaint;
     private int mYAxisTextColor; //y轴文字颜色
@@ -73,6 +79,7 @@ public class BarChartView extends AbsChartView {
 
     private List<BarChartData> mBarChartDataList;
     private String[] mXAxisTextArray;
+    private String[] mSubXAxisTextArray;
     private String mUnit; //单位(%等)
     private boolean mBarValueUnitEdge; //条形图上数值是否也显示单位
     private int mMaxGradient;
@@ -94,7 +101,6 @@ public class BarChartView extends AbsChartView {
     public BarChartView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         obtainValues(attrs);
-        initPaint();
     }
 
     private void obtainValues(AttributeSet attrs) {
@@ -114,7 +120,11 @@ public class BarChartView extends AbsChartView {
         mXAxisMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_xAxisMargin, ChartUtils.dp2px(mContext, 16));
         mBottomSpace = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_bottom_space, ChartUtils.dp2px(mContext, 72));
         mXAxisTextSize = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_xAxis_textSize, ChartUtils.sp2px(mContext, 12));
+        mXAxisTextLineCount = ta.getInt(R.styleable.BarChartView_bcv_xAxis_textLineCount, 1);
         mXAxisTextColor = ta.getColor(R.styleable.BarChartView_bcv_xAxis_textColor, Color.parseColor("#ffffff"));
+        mSubXAxisTextSize = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_subXAxis_textSize, ChartUtils.sp2px(mContext, 12));
+        mSubXAxisTextColor = ta.getColor(R.styleable.BarChartView_bcv_subXAxis_textColor, Color.parseColor("#ffffff"));
+        mSubXAxisMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bvb_subXAxis_textMargin, ChartUtils.dp2px(mContext, 12));
         mYAxisTextSize = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_yAxis_textSize, ChartUtils.sp2px(mContext, 12));
         mYAxisTextColor = ta.getColor(R.styleable.BarChartView_bcv_yAxis_textColor, Color.parseColor("#ffffff"));
         mDashedEnabled = ta.getBoolean(R.styleable.BarChartView_bcv_dashed_enabled, true);
@@ -126,28 +136,16 @@ public class BarChartView extends AbsChartView {
         mBarValueTextColor = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_textColor, Color.parseColor("#ffffff"));
         mDisplayAnimation = ta.getBoolean(R.styleable.BarChartView_bcv_display_animation, true);
         mAnimationDuration = ta.getInt(R.styleable.BarChartView_bcv_animation_duration, 1000);
+        //xAxis text array
+        final int textArrayResId = ta.getResourceId(R.styleable.BarChartView_bcv_xAxis_textArray, -1);
+        if (textArrayResId != -1) {
+            mXAxisTextArray = mContext.getResources().getStringArray(textArrayResId);
+        }
+        int subTextArrayResId = ta.getResourceId(R.styleable.BarChartView_bcv_subXAxis_textArray, -1);
+        if (subTextArrayResId != -1) {
+            mSubXAxisTextArray = mContext.getResources().getStringArray(subTextArrayResId);
+        }
         ta.recycle();
-    }
-
-    private void initPaint() {
-        mYAxisTextPaint = getYAxisTextPaint();
-        mXAxisTextPaint = getXAxisTextPaint();
-    }
-
-    private TextPaint getYAxisTextPaint() {
-        TextPaint paint = new TextPaint();
-        paint.setAntiAlias(true);
-        paint.setTextSize(mYAxisTextSize);
-        paint.setColor(mYAxisTextColor);
-        return paint;
-    }
-
-    private TextPaint getXAxisTextPaint() {
-        TextPaint paint = new TextPaint();
-        paint.setAntiAlias(true);
-        paint.setTextSize(mXAxisTextSize);
-        paint.setColor(mXAxisTextColor);
-        return paint;
     }
 
     public void setData(@Nullable List<BarChartData> dataList) {
@@ -160,6 +158,7 @@ public class BarChartView extends AbsChartView {
     }
 
     private void validateAndUpdate() {
+        initPaint();
         if (mDisplayAnimation) {
             if (mValueAnimation != null) {
                 mValueAnimation.end();
@@ -181,7 +180,6 @@ public class BarChartView extends AbsChartView {
         }
     }
 
-
     /*获取最大值*/
     private int getMaxValueFromData() {
         int max = 0;
@@ -191,6 +189,36 @@ public class BarChartView extends AbsChartView {
             }
         }
         return max;
+    }
+
+    private void initPaint() {
+        mYAxisTextPaint = getYAxisTextPaint();
+        mXAxisTextPaint = getXAxisTextPaint();
+        mSubXAxisTextPaint = getSubXAxisTextPaint();
+    }
+
+    private TextPaint getYAxisTextPaint() {
+        TextPaint paint = new TextPaint();
+        paint.setAntiAlias(true);
+        paint.setTextSize(mYAxisTextSize);
+        paint.setColor(mYAxisTextColor);
+        return paint;
+    }
+
+    private TextPaint getXAxisTextPaint() {
+        TextPaint paint = new TextPaint();
+        paint.setAntiAlias(true);
+        paint.setTextSize(mXAxisTextSize);
+        paint.setColor(mXAxisTextColor);
+        return paint;
+    }
+
+    private TextPaint getSubXAxisTextPaint() {
+        TextPaint paint = new TextPaint();
+        paint.setAntiAlias(true);
+        paint.setTextSize(mSubXAxisTextSize);
+        paint.setColor(mSubXAxisTextColor);
+        return paint;
     }
 
     @Override
@@ -252,6 +280,7 @@ public class BarChartView extends AbsChartView {
             }
             startDx += mIncludeLeftEdge ? mDividerWidth : 0;
             drawXAxis(canvas, startDx, startDy);
+            drawSubXAxisText(canvas, startDx, startDy);
             drawBar(canvas, startDx, startDy);
         }
     }
@@ -322,6 +351,32 @@ public class BarChartView extends AbsChartView {
          * */
         String source = TextUtils.isEmpty(text) ? "" : text;
         StaticLayout staticLayout = new StaticLayout(source, mXAxisTextPaint, mBarWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
+        canvas.save();
+        canvas.translate(x, y);
+        staticLayout.draw(canvas);
+        canvas.restore();
+    }
+
+    private void drawSubXAxisText(Canvas canvas, int startDx, int startDy) {
+        if (mSubXAxisTextArray != null && mSubXAxisTextArray.length > 0) {
+            for (int i = 0; i < mSubXAxisTextArray.length; i++) {
+                drawSubXAxisText(canvas, mSubXAxisTextArray[i], startDx, startDy, i);
+            }
+        }
+    }
+
+    private void drawSubXAxisText(Canvas canvas, String text, int startDx, int startDy, int index) {
+        float x = startDx + (mDividerWidth + mBarWidth) * index;
+        float y = startDy + mXAxisMargin + mXAxisTextSize * mXAxisTextLineCount + mSubXAxisMargin;
+        /* staticLayout支持换行，它既可以为文字设置宽度上限来让文字自动换行，也会在 \n 处主动换行。
+         * width 是文字区域的宽度，文字到达这个宽度后就会自动换行；
+         * align 是文字的对齐方向；
+         * spacingmult 是行间距的倍数，通常情况下填 1 就好；
+         * spacingadd 是行间距的额外增加值，通常情况下填 0 就好；
+         * includeadd 是指是否在文字上下添加额外的空间，来避免某些过高的字符的绘制出现越界。
+         * */
+        String source = TextUtils.isEmpty(text) ? "" : text;
+        StaticLayout staticLayout = new StaticLayout(source, mSubXAxisTextPaint, mBarWidth, Layout.Alignment.ALIGN_CENTER, 1f, 0, false);
         canvas.save();
         canvas.translate(x, y);
         staticLayout.draw(canvas);
@@ -454,6 +509,24 @@ public class BarChartView extends AbsChartView {
             mUnit = unit;
         }
 
+        public FluentInitializer withXAxisTextArray(@ArrayRes int arrayId) {
+            return withXAxisTextArray(mContext.getResources().getStringArray(arrayId));
+        }
+
+        public FluentInitializer withXAxisTextArray(@Nullable String[] xAxisTextArray) {
+            mXAxisTextArray = xAxisTextArray;
+            return this;
+        }
+
+        public FluentInitializer withSubXAxisTextArray(@ArrayRes int arrayId) {
+            return withSubXAxisTextArray(mContext.getResources().getStringArray(arrayId));
+        }
+
+        public FluentInitializer withSubXAxisTextArray(@Nullable String[] subXAxisTextArray) {
+            mSubXAxisTextArray = subXAxisTextArray;
+            return this;
+        }
+
         /*设置成能被10整除的数，否则计算不精准*/
         public FluentInitializer yScaleNum(int num) {
             mYScaleNum = num;
@@ -523,6 +596,11 @@ public class BarChartView extends AbsChartView {
             return this;
         }
 
+        public FluentInitializer xAxisTextLineCount(int lineCount) {
+            mXAxisTextLineCount = lineCount;
+            return this;
+        }
+
         /*x轴文字颜色*/
         public FluentInitializer xAxisTextColor(int xAxisTextColor) {
             mXAxisTextColor = xAxisTextColor;
@@ -539,6 +617,26 @@ public class BarChartView extends AbsChartView {
         public FluentInitializer xAxisTypeface(@Nullable Typeface typeface) {
             if (typeface != null) {
                 mXAxisTextPaint.setTypeface(typeface);
+            }
+            return this;
+        }
+
+        /*x轴文字颜色*/
+        public FluentInitializer subXAxisTextColor(int subXAxisTextColor) {
+            mSubXAxisTextColor = subXAxisTextColor;
+            return this;
+        }
+
+        /*x轴文字大小*/
+        public FluentInitializer subXAxisTextSize(int subXAxisTextSize) {
+            mSubXAxisTextSize = subXAxisTextSize;
+            return this;
+        }
+
+        /*x轴文字风格*/
+        public FluentInitializer subXAxisTypeface(@Nullable Typeface typeface) {
+            if (typeface != null) {
+                mSubXAxisTextPaint.setTypeface(typeface);
             }
             return this;
         }

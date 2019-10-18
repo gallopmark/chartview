@@ -14,6 +14,7 @@ public class BarChartData extends AbsChartData {
         super(xAxisText, value);
     }
 
+
     public BarChartData(@NonNull String xAxisText, double value, @Nullable String description) {
         super(xAxisText, value, description);
     }

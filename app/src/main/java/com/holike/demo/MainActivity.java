@@ -23,6 +23,7 @@ import pony.xcode.chart.data.PieChartData;
 public class MainActivity extends AppCompatActivity {
     private BarChartView barChartView;
     private List<BarChartData> barChartData = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,17 +54,17 @@ public class MainActivity extends AppCompatActivity {
 //        data.add(new LineChartData(7.8));
 //        data.add(new LineChartData(29));
 //        data.add(new LineChartData(35));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        data.add(new LineChartData(0));
-        lineChartView.withData(data, getResources().getStringArray(R.array.line_chart_months)).yScaleNum(5)
+        data.add(new LineChartData("1月", 0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+//        data.add(new LineChartData(0));
+        lineChartView.withData(data, null).yScaleNum(5)
                 .descriptionOvalSize(getResources().getDimensionPixelSize(R.dimen.lineChart_oval_size))
                 .descriptionArrowSize(getResources().getDimensionPixelSize(R.dimen.lineChart_arrow_size))
                 .descriptionTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -71,20 +72,21 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) lineChartView.getLayoutParams();
         params.height = 600;
         barChartView = findViewById(R.id.barChartView);
-        barChartData.add(new BarChartData(1012.1));
-        barChartData.add(new BarChartData(138.8));
-        barChartData.add(new BarChartData(3467.2));
-        barChartData.add(new BarChartData(7.9));
-        barChartData.add(new BarChartData(9.3));
-        barChartData.add(new BarChartData(4.6));
-        barChartData.add(new BarChartData(15.5));
-        barChartData.add(new BarChartData(104.3));
-        barChartData.add(new BarChartData(30.3));
-        barChartData.add(new BarChartData(7.7));
-        barChartView.withData(barChartData, R.array.line_chart_months)
+        barChartData.add(new BarChartData("1月\n10", 1012.1));
+        barChartData.add(new BarChartData("2月", 138.8));
+//        barChartData.add(new BarChartData(3467.2));
+//        barChartData.add(new BarChartData(7.9));
+//        barChartData.add(new BarChartData(9.3));
+//        barChartData.add(new BarChartData(4.6));
+//        barChartData.add(new BarChartData(15.5));
+//        barChartData.add(new BarChartData(104.3));
+//        barChartData.add(new BarChartData(30.3));
+//        barChartData.add(new BarChartData(7.7));
+        barChartView.withData(barChartData, null)
+                .withSubXAxisTextArray(new String[]{"10.01\n至\n10.31","11.01\n至\n11.30"})
                 .barValueAsInt(true)
                 .start();
-        runnable();
+//        runnable();
     }
 
     private void runnable() {

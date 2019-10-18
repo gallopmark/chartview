@@ -47,6 +47,13 @@ class ChartUtils {
         return rect.width();
     }
 
+    static int getTextHeight(@Nullable String text, Paint paint) {
+        if (TextUtils.isEmpty(text)) return 0;
+        Rect rect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), rect);
+        return rect.height();
+    }
+
     static float div(float value1, float value2) {
         BigDecimal b1 = new BigDecimal(Float.toString(value1));
         BigDecimal b2 = new BigDecimal(Float.toString(value2));

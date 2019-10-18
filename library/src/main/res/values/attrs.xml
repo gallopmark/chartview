@@ -109,6 +109,7 @@
         <attr name="bcv_bottom_space" format="dimension" />
         <!--x轴文字大小-->
         <attr name="bcv_xAxis_textSize" format="dimension" />
+        <attr name="bcv_xAxis_textLineCount" format="integer"/>
         <!--x轴文字颜色-->
         <attr name="bcv_xAxis_textColor" format="color" />
         <!--y轴文字大小-->
@@ -129,6 +130,12 @@
         <attr name="bcv_display_animation" format="boolean" />
         <!--动画持续时间-->
         <attr name="bcv_animation_duration" format="integer" />
+        <!--x轴文字刻度数组-->
+        <attr name="bcv_xAxis_textArray" format="reference" />
+        <attr name="bcv_subXAxis_textSize" format="dimension"/>
+        <attr name="bcv_subXAxis_textColor" format="color"/>
+        <attr name="bvb_subXAxis_textMargin" format="dimension" />
+        <attr name="bcv_subXAxis_textArray" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="PieChartView">
