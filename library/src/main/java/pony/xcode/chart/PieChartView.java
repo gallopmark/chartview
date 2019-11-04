@@ -32,6 +32,7 @@ public class PieChartView extends View {
     private int mInnerCircleColor; //内圆颜色
     private int mRingWidth; //圆环宽度
     //divider
+    private boolean mDividerEnabled;
     private int mDividerWidth; //分段宽度
     private int mDividerColor; //分段颜色
     //animation
@@ -63,6 +64,7 @@ public class PieChartView extends View {
         mOuterCircleColor = ta.getColor(R.styleable.PieChartView_pcv_outer_color, Color.parseColor("#dadada"));
         mRingWidth = ta.getDimensionPixelSize(R.styleable.PieChartView_pcv_ring_width, ChartUtils.dp2px(mContext, 20));
         mInnerCircleColor = ta.getColor(R.styleable.PieChartView_pcv_inner_color, Color.parseColor("#ffffff"));
+        mDividerEnabled = ta.getBoolean(R.styleable.PieChartView_pcv_divider_enabled, false);
         mDividerWidth = ta.getDimensionPixelSize(R.styleable.PieChartView_pcv_divider_width, ChartUtils.dp2px(mContext, 1));
         mDividerColor = ta.getColor(R.styleable.PieChartView_pcv_divider_color, Color.parseColor("#ffffff"));
         mDisplayAnimation = ta.getBoolean(R.styleable.PieChartView_pcv_display_animation, true);
@@ -167,7 +169,7 @@ public class PieChartView extends View {
 
     //画分割线
     private void drawDivider(Canvas canvas, RectF rectF, Paint paint) {
-        if (mDividerWidth > 0) {
+        if (mDividerEnabled && mDividerWidth > 0) {
             for (PieChartData data : mPieChartDataList) {
                 canvas.drawArc(rectF, data.getPieStart(), data.getPieSweep(), true, paint);
             }

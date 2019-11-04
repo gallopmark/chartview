@@ -149,6 +149,7 @@
         <attr name="pcv_inner_color" format="color" />
         <!--圆环宽度-->
         <attr name="pcv_ring_width" format="dimension" />
+        <attr name="pcv_divider_enabled" format="boolean"/>
         <!--分段宽度-->
         <attr name="pcv_divider_width" format="dimension" />
         <attr name="pcv_divider_color" format="color" />

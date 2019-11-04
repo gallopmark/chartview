@@ -22,10 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:pcv_diameter="240dp"
-        android:visibility="gone"
         app:pcv_divider_color="#ffffff"
         app:pcv_divider_width="2dp"
-        app:pcv_ring_width="25dp" />
+        app:pcv_ring_width="20dp" />
 
     <com.holike.demo.widget.PieChartView2
         android:id="@+id/pcv"
