@@ -157,7 +157,7 @@ public class LineChartView extends AbsChartView {
         mPolylineEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_enabled, true);
         mDisplayPolylineZero = ta.getBoolean(R.styleable.LineChartView_lcv_polyline_display_zero, false);
         mPolylineWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyline_width, ChartUtils.dp2px(mContext, 1));
-        mPolylineColor = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_polyline_color, Color.parseColor("#ffff00"));
+        mPolylineColor = ta.getColor(R.styleable.LineChartView_lcv_polyline_color, Color.parseColor("#ffff00"));
         //trace
         mTraceEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_trace_enable, false);
         mTraceSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_trace_size, ChartUtils.dp2px(mContext, 6));
