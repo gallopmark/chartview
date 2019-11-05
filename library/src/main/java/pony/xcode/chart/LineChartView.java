@@ -145,7 +145,7 @@ public class LineChartView extends AbsChartView {
         mBottomSpace = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_bottom_space, ChartUtils.dp2px(mContext, 60));
         //x轴
         mYAxisTextColor = ta.getColor(R.styleable.LineChartView_lcv_yAxis_textColor, Color.parseColor("#ffffff"));
-        mYAxisTextSize = ta.getColor(R.styleable.LineChartView_lcv_yAxis_textSize, ChartUtils.sp2px(mContext, 12));
+        mYAxisTextSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_yAxis_textSize, ChartUtils.sp2px(mContext, 12));
         mXAxisTextColor = ta.getColor(R.styleable.LineChartView_lcv_xAxis_textColor, Color.parseColor("#ffffff"));
         mXAxisTextSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_xAxis_textSize, ChartUtils.sp2px(mContext, 12));
         mDashedColor = ta.getColor(R.styleable.LineChartView_lcv_dashed_color, Color.parseColor("#66ffffff"));
@@ -176,7 +176,7 @@ public class LineChartView extends AbsChartView {
         //description
         mDescriptionHeight = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_height, ChartUtils.dp2px(mContext, 20));
         mDescriptionArrowSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_arrow_size, ChartUtils.dp2px(mContext, 4));
-        mDescriptionBgColor = ta.getResourceId(R.styleable.LineChartView_lcv_description_bgColor, Color.parseColor("#ffffff"));
+        mDescriptionBgColor = ta.getColor(R.styleable.LineChartView_lcv_description_background, Color.parseColor("#ffffff"));
         mDescriptionTextColor = ta.getColor(R.styleable.LineChartView_lcv_description_textColor, Color.parseColor("#0045A7"));
         mDescriptionTextSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_textSize, ChartUtils.sp2px(mContext, 12));
         mDescriptionPadding = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_padding, ChartUtils.dp2px(mContext, 4));
@@ -188,7 +188,7 @@ public class LineChartView extends AbsChartView {
             mDescriptionOvalSize = mDescriptionHeight;
         }
         mDescriptionOvalStrokeWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_oval_strokeWidth, ChartUtils.dp2px(mContext, 1));
-        mDescriptionOvalStrokeColor = ta.getColor(R.styleable.LineChartView_lcv_description_over_strokeColor, Color.parseColor("#0045A7"));
+        mDescriptionOvalStrokeColor = ta.getColor(R.styleable.LineChartView_lcv_description_oval_strokeColor, Color.parseColor("#0045A7"));
         mDisplayAnimation = ta.getBoolean(R.styleable.LineChartView_lcv_display_animation, true);
         mAnimationDuration = ta.getInt(R.styleable.LineChartView_lcv_animation_duration, 1000);
         //xAxis text array

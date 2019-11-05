@@ -59,7 +59,7 @@
         <attr name="lcv_point_strokeWidth" format="dimension" />
         <attr name="lcv_point_strokeColor" format="color" />
 
-        <attr name="lcv_description_bgColor" format="reference" />
+        <attr name="lcv_description_background" format="color" />
         <attr name="lcv_description_height" format="dimension" />
         <attr name="lcv_description_arrow_size" format="dimension" />
         <attr name="lcv_description_textColor" format="color" />
@@ -73,7 +73,7 @@
         <attr name="lcv_description_oval_size" format="dimension" />
         <attr name="lcv_description_oval_margin" format="dimension"/>
         <attr name="lcv_description_oval_strokeWidth" format="dimension" />
-        <attr name="lcv_description_over_strokeColor" format="color" />
+        <attr name="lcv_description_oval_strokeColor" format="color" />
         <!--是否展示动画-->
         <attr name="lcv_display_animation" format="boolean" />
         <!--动画持续时间-->
