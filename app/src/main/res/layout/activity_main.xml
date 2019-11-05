@@ -41,10 +41,10 @@
         app:lcv_description_padding="14dp"
         app:lcv_description_oval_size="16dp"
         app:lcv_description_textSize="12sp"
-        app:lcv_description_bgColor="@color/colorAccent"
+        app:lcv_description_background="@color/colorAccent"
         app:lcv_area_enabled="true"
         app:lcv_display_animation="true"
-        app:lcv_reverse="true"
+        app:lcv_reverse="false"
         app:lcv_polyline_display_zero="false" />
 
     <pony.xcode.chart.BarChartView

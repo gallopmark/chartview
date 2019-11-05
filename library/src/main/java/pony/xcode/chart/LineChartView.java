@@ -211,7 +211,7 @@ public class LineChartView extends AbsChartView {
     }
 
     public void setData(@Nullable List<LineChartData> dataList) {
-        if (dataList == null || dataList.isEmpty()) return;
+        if (dataList == null) return;
         this.mLineChartDataList = new ArrayList<>(dataList);
         int maxValue = getMaxValueFromData();
         mMaxGradient = ChartUtils.getMaxGraded(maxValue);
@@ -271,7 +271,7 @@ public class LineChartView extends AbsChartView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mLineChartDataList != null && !mLineChartDataList.isEmpty()) {
+        if (mLineChartDataList != null) {
             initItemMinWidth();
             initNeedWidth();
             if (mReverse) {
