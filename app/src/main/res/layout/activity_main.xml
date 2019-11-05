@@ -35,12 +35,16 @@
     <pony.xcode.chart.LineChartView
         android:id="@+id/lineChartView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         app:lcv_animation_duration="2000"
         app:lcv_description_height="20dp"
+        app:lcv_description_padding="14dp"
         app:lcv_description_oval_size="16dp"
         app:lcv_description_textSize="12sp"
+        app:lcv_description_bgColor="@color/colorAccent"
+        app:lcv_area_enabled="true"
         app:lcv_display_animation="true"
+        app:lcv_reverse="true"
         app:lcv_polyline_display_zero="false" />
 
     <pony.xcode.chart.BarChartView
@@ -49,6 +53,7 @@
         android:layout_height="wrap_content"
         app:bcv_bottom_space="100dp"
         app:bcv_xAxis_textLineCount="2"
+        android:visibility="gone"
         app:bcv_subXAxis_textSize="10sp"
         app:bcv_subXAxis_textColor="@color/colorAccent"
         app:bvb_subXAxis_textMargin="6dp"

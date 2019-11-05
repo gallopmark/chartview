@@ -90,6 +90,7 @@ public class LineChartView extends AbsChartView {
     private int mDescriptionPadding; //内边距
     //oval
     private int mDescriptionOvalVisibility; //圆圈可见性
+    private int mDescriptionOvalMargin;  //圆圈边距（距离文字）
     private int mDescriptionOvalSize; //圆圈大小
     private int mDescriptionOvalStrokeWidth; //圆圈线粗细
     private int mDescriptionOvalStrokeColor; //圆圈颜色
@@ -110,8 +111,11 @@ public class LineChartView extends AbsChartView {
     private String mUnit; //单位
 
     private boolean mCanceledOnTouchOutside;
+    private boolean mReverse; //是否反向
     //    private int mXSpace;  //平分x轴之后的距离值
     private int mMaxGradient;
+    private int mAverage; //平均值
+    private static final int MINIMUM_SCALE = 1;
     private float mProgress = 1f;
     //touch
     private float mDownX;
@@ -178,6 +182,7 @@ public class LineChartView extends AbsChartView {
         mDescriptionPadding = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_padding, ChartUtils.dp2px(mContext, 4));
         //oval
         mDescriptionOvalVisibility = ta.getInt(R.styleable.LineChartView_lcv_description_oval_visibility, OVAL_VISIBLE);
+        mDescriptionOvalMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_oval_margin, ChartUtils.dp2px(mContext, 4));
         mDescriptionOvalSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_description_oval_size, ChartUtils.dp2px(mContext, 10));
         if (mDescriptionOvalSize > mDescriptionHeight) { //圆圈高度不超过描述框高度
             mDescriptionOvalSize = mDescriptionHeight;
@@ -192,6 +197,7 @@ public class LineChartView extends AbsChartView {
             mXAxisTextArray = mContext.getResources().getStringArray(textArrayResId);
         }
         mCanceledOnTouchOutside = ta.getBoolean(R.styleable.LineChartView_lcv_canceledOnTouchOutside, false);
+        mReverse = ta.getBoolean(R.styleable.LineChartView_lcv_reverse, false);
         ta.recycle();
     }
 
@@ -209,6 +215,7 @@ public class LineChartView extends AbsChartView {
         this.mLineChartDataList = new ArrayList<>(dataList);
         int maxValue = getMaxValueFromData();
         mMaxGradient = ChartUtils.getMaxGraded(maxValue);
+        mAverage = mMaxGradient / mLineNumber;
         resetInitialStatus();
         validateAndUpdate();
     }
@@ -267,24 +274,28 @@ public class LineChartView extends AbsChartView {
         if (mLineChartDataList != null && !mLineChartDataList.isEmpty()) {
             initItemMinWidth();
             initNeedWidth();
-            int startDy = getStartDy();
-            int ySpace = getYSpace();
-            drawYAxis(canvas, startDy, ySpace);
-            int startDx = getStartDx();
-            if (mDashedEnabled) {
-                drawDashedLine(canvas, startDx, startDy, ySpace);
+            if (mReverse) {
+                reverse(canvas, getStartDyReverse(), getYSpace());
+            } else {
+                int startDy = getStartDy();
+                int ySpace = getYSpace();
+                drawYAxis(canvas, getStartDy(), ySpace);
+                int startDx = getStartDx();
+                if (mDashedEnabled) {
+                    drawDashedLine(canvas, startDx, startDy, ySpace);
+                }
+                drawXAxis(canvas, startDx, startDy);
+                if (mPolylineEnabled) {
+                    drawPolyline(canvas, startDx);
+                }
+                if (mTraceEnabled) {
+                    drawTrace(canvas, startDx);
+                }
+                if (mAreaEnabled) {
+                    drawArea(canvas, startDx, startDy);
+                }
+                drawSelectCeil(canvas, startDx);
             }
-            drawXAxis(canvas, startDx, startDy);
-            if (mPolylineEnabled) {
-                drawPolyline(canvas, startDx);
-            }
-            if (mTraceEnabled) {
-                drawTrace(canvas, startDx);
-            }
-            if (mAreaEnabled) {
-                drawArea(canvas, startDx, startDy);
-            }
-            drawSelectCeil(canvas, startDx);
         }
     }
 
@@ -311,12 +322,42 @@ public class LineChartView extends AbsChartView {
         }
     }
 
+    private void reverse(Canvas canvas, int startDy, int ySpace) {
+        drawYAxisReverse(canvas, startDy, ySpace);
+        int startDx = getStartDx();
+        if (mDashedEnabled) {
+            drawDashedLineReverse(canvas, startDx, startDy, ySpace);
+        }
+        drawXAxis(canvas, startDx, getStartDy());
+        if (mPolylineEnabled) {
+            drawPolylineReverse(canvas, startDx);
+        }
+        if (mTraceEnabled) {
+            drawTraceReverse(canvas, startDx);
+        }
+        if (mAreaEnabled) {
+            drawAreaReserve(canvas, startDx, startDy);
+        }
+        drawSelectCeilReverse(canvas, startDx);
+    }
+
     /*画y轴刻度文字*/
     private void drawYAxis(Canvas canvas, int startDy, int ySpace) {
-        int average = mMaxGradient / mLineNumber;
         String unit = TextUtils.isEmpty(mUnit) ? "" : mUnit;
         for (int i = 0; i <= mLineNumber; i++) {
-            canvas.drawText((average * i) + unit, mLeftMargin, startDy - i * ySpace, mYAxisTextPaint);
+            canvas.drawText((mAverage * i) + unit, mLeftMargin, startDy - i * ySpace, mYAxisTextPaint);
+        }
+    }
+
+    //反向画y轴文字刻度
+    private void drawYAxisReverse(Canvas canvas, int startDy, int ySpace) {
+        String unit = TextUtils.isEmpty(mUnit) ? "" : mUnit;
+        for (int i = 0; i <= mLineNumber; i++) {
+            if (i == 0) {
+                canvas.drawText(MINIMUM_SCALE + unit, mLeftMargin, startDy + i * ySpace, mYAxisTextPaint);
+            } else {
+                canvas.drawText((mAverage * i) + unit, mLeftMargin, startDy + i * ySpace, mYAxisTextPaint);
+            }
         }
     }
 
@@ -327,6 +368,19 @@ public class LineChartView extends AbsChartView {
         for (int i = 0; i <= mLineNumber; i++) {
             path.reset();
             float y = startDy - (i * ySpace);
+            path.moveTo(startDx, y); //线起点
+            path.lineTo(getEndX(), y); //线终点
+            canvas.drawPath(path, paint); //开始画线
+        }
+    }
+
+    /*画反向虚线*/
+    private void drawDashedLineReverse(Canvas canvas, int startDx, int startDy, int ySpace) {
+        Path path = new Path();
+        Paint paint = getDashedLinePaint();
+        for (int i = 0; i <= mLineNumber; i++) {
+            path.reset();
+            float y = startDy + (i * ySpace);
             path.moveTo(startDx, y); //线起点
             path.lineTo(getEndX(), y); //线终点
             canvas.drawPath(path, paint); //开始画线
@@ -386,9 +440,28 @@ public class LineChartView extends AbsChartView {
         int start = 0;
         for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
             float startX = mItemWidth * (start) + startDx;
-            float startY = getPointY(mLineChartDataList.get(start).getValue());
+            double value = mLineChartDataList.get(start).getValue();
+            float startY = getPointY(value);
             float stopX = mItemWidth * i + startDx;
-            float stopY = getPointY(mLineChartDataList.get(i).getValue());
+            value = mLineChartDataList.get(i).getValue();
+            float stopY = getPointY(value);
+            canvas.drawLine(startX, startY, stopX, stopY, paint);
+            start = i;
+        }
+    }
+
+    /*反向画折线*/
+    private void drawPolylineReverse(Canvas canvas, int startDx) {
+        if (!mDisplayPolylineZero && getMaxValueFromData() <= 0) return;
+        Paint paint = getPolyLinePaint();
+        int start = 0;
+        for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
+            float startX = mItemWidth * (start) + startDx;
+            double value = mLineChartDataList.get(start).getValue();
+            float startY = getPointYReverse(value);
+            float stopX = mItemWidth * i + startDx;
+            value = mLineChartDataList.get(i).getValue();
+            float stopY = getPointYReverse(value);
             canvas.drawLine(startX, startY, stopX, stopY, paint);
             start = i;
         }
@@ -409,6 +482,16 @@ public class LineChartView extends AbsChartView {
         for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
             float startX = mItemWidth * i + startDx;
             float startY = getPointY(mLineChartDataList.get(i).getValue());
+            canvas.drawCircle(startX, startY, mTraceSize / 2f, paint);
+        }
+    }
+
+    private void drawTraceReverse(Canvas canvas, int startDx) {
+        Paint paint = getTracePaint();
+        for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
+            float startX = mItemWidth * i + startDx;
+            double value = mLineChartDataList.get(i).getValue();
+            float startY = getPointYReverse(value);
             canvas.drawCircle(startX, startY, mTraceSize / 2f, paint);
         }
     }
@@ -443,6 +526,27 @@ public class LineChartView extends AbsChartView {
         canvas.drawPath(path, paint);
     }
 
+    private void drawAreaReserve(Canvas canvas, int startDx, int startDy) {
+        Paint paint = getAreaPaint();
+        Path path = new Path();
+        float start = startDx, end = startDx;
+        for (int i = 0, size = mLineChartDataList.size(); i < size; i++) {
+            final float x = startDx + mItemWidth * i;
+            double value = mLineChartDataList.get(i).getValue();
+            if (i == 0) {
+                start = x;
+                path.moveTo(x, getPointYReverse(value));
+            } else {
+                end = x;
+                path.lineTo(end, getPointYReverse(value));
+            }
+        }
+        path.lineTo(end, startDy);
+        path.lineTo(start, startDy);
+        path.close();
+        canvas.drawPath(path, paint);
+    }
+
     private Paint getAreaPaint() {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -463,7 +567,19 @@ public class LineChartView extends AbsChartView {
             Paint paint = getSelectCeilPaint();
             float dx = startDx + mItemWidth * mSelectPosition;
             drawVerticalLine(canvas, dx, mOldTopSpace + mDescriptionHeight + mDescriptionArrowSize, dx, getStartDy(), paint);
-            drawPoint(canvas, dx, getPointY(mLineChartDataList.get(mSelectPosition).getValue()), paint);
+            double value = mLineChartDataList.get(mSelectPosition).getValue();
+            drawPoint(canvas, dx, getPointY(value), paint);
+            drawPointDescription(canvas, startDx, mSelectPosition);
+        }
+    }
+
+    private void drawSelectCeilReverse(Canvas canvas, int startDx) {
+        if (mSelectPosition >= 0 && mSelectPosition < mLineChartDataList.size()) {
+            Paint paint = getSelectCeilPaint();
+            float dx = startDx + mItemWidth * mSelectPosition;
+            drawVerticalLine(canvas, dx, mOldTopSpace + mDescriptionHeight + mDescriptionArrowSize, dx, getStartDy(), paint);
+            double value = mLineChartDataList.get(mSelectPosition).getValue();
+            drawPoint(canvas, dx, getPointYReverse(value), paint);
             drawPointDescription(canvas, startDx, mSelectPosition);
         }
     }
@@ -489,17 +605,21 @@ public class LineChartView extends AbsChartView {
 
     /*描述*/
     private void drawPointDescription(Canvas canvas, int startDx, int position) {
-        Paint paint = getDescriptionPaint();
+        TextPaint paint = getDescriptionPaint();
         paint.setColor(mDescriptionBgColor);
         paint.setTextSize(mDescriptionTextSize);
         paint.setStyle(Paint.Style.FILL);
         String text = getDescription(position);
         /*计算文本所需宽度*/
         int ovalSize = mDescriptionOvalVisibility == OVAL_GONE ? 0 : mDescriptionOvalSize;
+        int ovalMargin = 0;
+        if (ovalSize > 0) {
+            ovalMargin = mDescriptionOvalMargin;
+        }
         if (mDescriptionTypeface != null) {
             paint.setTypeface(mDescriptionTypeface);
         }
-        int textWidth = ChartUtils.getTextWidth(text, paint) + ovalSize + mDescriptionPadding * 3;
+        int rectWidth = ChartUtils.getTextWidth(text, paint) + ovalSize + ovalMargin + mDescriptionPadding * 2;
         //画箭头框
         Path path = new Path();
         final float startY = mOldTopSpace;
@@ -507,8 +627,8 @@ public class LineChartView extends AbsChartView {
         if (position == 0) {
             textLeft = startDx;
             path.moveTo(startDx, startY);
-            path.lineTo(startDx + textWidth, startY);
-            path.lineTo(startDx + textWidth, startY + mDescriptionHeight);
+            path.lineTo(startDx + rectWidth, startY);
+            path.lineTo(startDx + rectWidth, startY + mDescriptionHeight);
             /*下面两步为画角标*/
             path.lineTo(startDx + mDescriptionArrowSize, startY + mDescriptionHeight);
             path.lineTo(startDx, startY + mDescriptionHeight + mDescriptionArrowSize);
@@ -516,20 +636,20 @@ public class LineChartView extends AbsChartView {
             canvas.drawPath(path, paint);
         } else if (position == mLineChartDataList.size() - 1) {  //最后一个位置
             final int dx = startDx + position * mItemWidth;
-            textLeft = dx - textWidth;
-            path.moveTo(dx - textWidth, startY); //起始点
+            textLeft = dx - rectWidth;
+            path.moveTo(dx - rectWidth, startY); //起始点
             path.lineTo(dx, startY); //终点
             path.lineTo(dx, startY + mDescriptionHeight + mDescriptionArrowSize); //终点向下画
             //draw arrow
             path.lineTo(dx - mDescriptionArrowSize, startY + mDescriptionHeight);
-            path.lineTo(dx - textWidth, startY + mDescriptionHeight);
+            path.lineTo(dx - rectWidth, startY + mDescriptionHeight);
             path.close();
             canvas.drawPath(path, paint);
         } else {
             final int dx = startDx + position * mItemWidth;
-            textLeft = dx - textWidth / 2;
-            final float xl = dx - textWidth / 2f;
-            final float xr = dx + textWidth / 2f;
+            textLeft = dx - rectWidth / 2;
+            final float xl = dx - rectWidth / 2f;
+            final float xr = dx + rectWidth / 2f;
             final float dy = startY + mDescriptionHeight;
             path.moveTo(xl, startY);
             path.lineTo(xr, startY);
@@ -543,9 +663,9 @@ public class LineChartView extends AbsChartView {
         }
         //写文字
         paint.setColor(mDescriptionTextColor);
-        final float y = startY + ChartUtils.div(mDescriptionHeight, 2f);
+        final float y = startY + mDescriptionHeight / 2f;
         /*写描述文字*/
-        canvas.drawText(text, textLeft + mDescriptionPadding * 2 + ovalSize, y + ChartUtils.div(mDescriptionTextSize, 2.5f), paint);
+        canvas.drawText(text, textLeft + mDescriptionPadding + ovalMargin + ovalSize, y + ChartUtils.div(mDescriptionTextSize, 2.5f), paint);
         //画圆圈
         drawDescriptionOval(canvas, textLeft + mDescriptionPadding + ovalSize / 2f, y, ovalSize / 2f, paint);
     }
@@ -561,8 +681,8 @@ public class LineChartView extends AbsChartView {
         }
     }
 
-    private Paint getDescriptionPaint() {
-        Paint paint = new Paint();
+    private TextPaint getDescriptionPaint() {
+        TextPaint paint = new TextPaint();
         paint.setAntiAlias(true);
         return paint;
     }
@@ -600,6 +720,11 @@ public class LineChartView extends AbsChartView {
         return (float) (getStartDy() - (getStartDy() - mTopMargin) * (value / mMaxGradient) * mProgress);
     }
 
+    private float getPointYReverse(double value) {
+        float percent = (float) (value < mAverage ? ((value - MINIMUM_SCALE) / (mMaxGradient - MINIMUM_SCALE)) : (value / mMaxGradient));
+        return mTopMargin + getChartHeight() * percent * mProgress;
+    }
+
     /*图表高度*/
     public int getChartHeight() {
         return mHeight - mTopMargin - mBottomSpace - mBottomMargin;
@@ -627,6 +752,10 @@ public class LineChartView extends AbsChartView {
     /*开始画y轴刻度的位置*/
     private int getStartDy() {
         return mHeight - mBottomSpace - mBottomMargin;
+    }
+
+    private int getStartDyReverse() {
+        return mTopMargin;
     }
 
     /*y轴平均值*/
@@ -967,6 +1096,11 @@ public class LineChartView extends AbsChartView {
             return this;
         }
 
+        public FluentInitializer descriptionOvalMargin(int margin){
+            mDescriptionOvalMargin = margin;
+            return this;
+        }
+
         /*圆圈大小*/
         public FluentInitializer descriptionOvalSize(int descriptionOvalSize) {
             mDescriptionOvalSize = descriptionOvalSize;
@@ -995,6 +1129,11 @@ public class LineChartView extends AbsChartView {
 
         public FluentInitializer canceledOnTouchOutside(boolean isCanceled) {
             mCanceledOnTouchOutside = isCanceled;
+            return this;
+        }
+
+        public FluentInitializer reverse(boolean isReverse) {
+            mReverse = isReverse;
             return this;
         }
 

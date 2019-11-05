@@ -54,7 +54,12 @@ public class MainActivity extends AppCompatActivity {
 //        data.add(new LineChartData(7.8));
 //        data.add(new LineChartData(29));
 //        data.add(new LineChartData(35));
-        data.add(new LineChartData("1月", 0));
+        data.add(new LineChartData("", 1, "排名：1"));
+        data.add(new LineChartData("", 2, "排名：2"));
+        data.add(new LineChartData("", 14, "排名：14"));
+        data.add(new LineChartData("", 7, "排名：7"));
+        data.add(new LineChartData("", 8, "排名：8"));
+        data.add(new LineChartData("", 120, "排名：120"));
 //        data.add(new LineChartData(0));
 //        data.add(new LineChartData(0));
 //        data.add(new LineChartData(0));
@@ -64,13 +69,11 @@ public class MainActivity extends AppCompatActivity {
 //        data.add(new LineChartData(0));
 //        data.add(new LineChartData(0));
 //        data.add(new LineChartData(0));
-        lineChartView.withData(data, null).yScaleNum(5)
+        lineChartView.withData(data, R.array.line_chart_months).yScaleNum(5)
                 .descriptionOvalSize(getResources().getDimensionPixelSize(R.dimen.lineChart_oval_size))
                 .descriptionArrowSize(getResources().getDimensionPixelSize(R.dimen.lineChart_arrow_size))
                 .descriptionTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                 .start();
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) lineChartView.getLayoutParams();
-        params.height = 600;
         barChartView = findViewById(R.id.barChartView);
         barChartData.add(new BarChartData("1月\n10", 1012.1));
         barChartData.add(new BarChartData("2月", 138.8));
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 //        barChartData.add(new BarChartData(30.3));
 //        barChartData.add(new BarChartData(7.7));
         barChartView.withData(barChartData, null)
-                .withSubXAxisTextArray(new String[]{"10.01\n至\n10.31","11.01\n至\n11.30"})
+                .withSubXAxisTextArray(new String[]{"10.01\n至\n10.31", "11.01\n至\n11.30"})
                 .barValueAsInt(true)
                 .start();
 //        runnable();

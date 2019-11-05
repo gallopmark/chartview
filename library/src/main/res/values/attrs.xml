@@ -71,6 +71,7 @@
             <enum name="gone" value="8" />
         </attr>
         <attr name="lcv_description_oval_size" format="dimension" />
+        <attr name="lcv_description_oval_margin" format="dimension"/>
         <attr name="lcv_description_oval_strokeWidth" format="dimension" />
         <attr name="lcv_description_over_strokeColor" format="color" />
         <!--是否展示动画-->
@@ -81,6 +82,8 @@
         <attr name="lcv_xAxis_textArray" format="reference" />
         <!--点击外部是否隐藏选中提示-->
         <attr name="lcv_canceledOnTouchOutside" format="boolean" />
+        <!--是否翻转-->
+        <attr name="lcv_reverse" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="BarChartView">

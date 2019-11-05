@@ -147,9 +147,9 @@ abstract class AbsChartView extends View {
         }
     }
 
-    void resetInitialStatus(){
+    void resetInitialStatus() {
         recycleVelocityTracker();
         mScroller.forceFinished(true);
-        mScroller.startScroll(0,0,0,0);
+        mScroller.startScroll(0, 0, 0, 0);
     }
 }
