@@ -783,6 +783,8 @@ public class LineChartView extends AbsChartView {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (mLineChartDataList == null || mLineChartDataList.isEmpty())
+            return super.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownX = event.getX() + getScrollX();
@@ -1096,7 +1098,7 @@ public class LineChartView extends AbsChartView {
             return this;
         }
 
-        public FluentInitializer descriptionOvalMargin(int margin){
+        public FluentInitializer descriptionOvalMargin(int margin) {
             mDescriptionOvalMargin = margin;
             return this;
         }
