@@ -29,6 +29,8 @@
         <attr name="lcv_dashed_xAxisMargin" format="dimension" />
         <!--虚线颜色-->
         <attr name="lcv_dashed_color" format="color" />
+        <!--虚线宽度-->
+        <attr name="lcv_dashed_width" format="dimension" />
         <!--y轴平分等分数-->
         <attr name="lcv_yScaleNum" format="integer" />
         <!--是否显示折线-->
@@ -52,6 +54,8 @@
         <attr name="lcv_vertical_lineColor" format="color" />
         <!--竖线粗细-->
         <attr name="lcv_vertical_lineWidth" format="dimension" />
+        <!--竖线虚线效果-->
+        <attr name="lcv_vertical_dashed_effect" format="boolean"/>
         <!--选中后 描点大小-->
         <attr name="lcv_point_size" format="dimension" />
         <!--选中后 描点颜色-->
@@ -71,7 +75,7 @@
             <enum name="gone" value="8" />
         </attr>
         <attr name="lcv_description_oval_size" format="dimension" />
-        <attr name="lcv_description_oval_margin" format="dimension"/>
+        <attr name="lcv_description_oval_margin" format="dimension" />
         <attr name="lcv_description_oval_strokeWidth" format="dimension" />
         <attr name="lcv_description_oval_strokeColor" format="color" />
         <!--是否展示动画-->
@@ -83,7 +87,7 @@
         <!--点击外部是否隐藏选中提示-->
         <attr name="lcv_canceledOnTouchOutside" format="boolean" />
         <!--是否翻转-->
-        <attr name="lcv_reverse" format="boolean"/>
+        <attr name="lcv_reverse" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="BarChartView">
@@ -112,7 +116,7 @@
         <attr name="bcv_bottom_space" format="dimension" />
         <!--x轴文字大小-->
         <attr name="bcv_xAxis_textSize" format="dimension" />
-        <attr name="bcv_xAxis_textLineCount" format="integer"/>
+        <attr name="bcv_xAxis_textLineCount" format="integer" />
         <!--x轴文字颜色-->
         <attr name="bcv_xAxis_textColor" format="color" />
         <!--y轴文字大小-->
@@ -135,8 +139,8 @@
         <attr name="bcv_animation_duration" format="integer" />
         <!--x轴文字刻度数组-->
         <attr name="bcv_xAxis_textArray" format="reference" />
-        <attr name="bcv_subXAxis_textSize" format="dimension"/>
-        <attr name="bcv_subXAxis_textColor" format="color"/>
+        <attr name="bcv_subXAxis_textSize" format="dimension" />
+        <attr name="bcv_subXAxis_textColor" format="color" />
         <attr name="bvb_subXAxis_textMargin" format="dimension" />
         <attr name="bcv_subXAxis_textArray" format="reference" />
     </declare-styleable>
@@ -152,7 +156,7 @@
         <attr name="pcv_inner_color" format="color" />
         <!--圆环宽度-->
         <attr name="pcv_ring_width" format="dimension" />
-        <attr name="pcv_divider_enabled" format="boolean"/>
+        <attr name="pcv_divider_enabled" format="boolean" />
         <!--分段宽度-->
         <attr name="pcv_divider_width" format="dimension" />
         <attr name="pcv_divider_color" format="color" />

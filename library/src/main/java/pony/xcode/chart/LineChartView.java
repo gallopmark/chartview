@@ -40,6 +40,7 @@ public class LineChartView extends AbsChartView {
 
     private boolean mDashedEnabled; //是否显示虚线
     private int mDashedColor; //虚线颜色
+    private int mDashedWidth; //虚线宽度
     private int mDashedYAxisMargin; //虚线离y轴的距离
     private int mDashedXAxisMargin; //虚线离x轴的距离
     private DashPathEffect mDashPathEffect; //虚线效果
@@ -74,6 +75,8 @@ public class LineChartView extends AbsChartView {
     //Vertical line
     private int mVerticalLineColor; //画竖线颜色
     private int mVerticalLineWidth; //画竖线的宽度
+    private boolean mVerticalLineDashedEffect;  //竖线虚线效果
+    private DashPathEffect mVerticalLinePathEffect;
     //point
     private int mPointColor; //选中后的描点颜色
     private int mPointSize; //选中后的描点大小
@@ -149,6 +152,7 @@ public class LineChartView extends AbsChartView {
         mXAxisTextColor = ta.getColor(R.styleable.LineChartView_lcv_xAxis_textColor, Color.parseColor("#ffffff"));
         mXAxisTextSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_xAxis_textSize, ChartUtils.sp2px(mContext, 12));
         mDashedColor = ta.getColor(R.styleable.LineChartView_lcv_dashed_color, Color.parseColor("#66ffffff"));
+        mDashedWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_dashed_width, ChartUtils.dp2px(mContext, 0.5f));
         mDashedYAxisMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_dashed_yAxisMargin, ChartUtils.dp2px(mContext, 16));
         mDashedXAxisMargin = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_dashed_xAxisMargin, ChartUtils.dp2px(mContext, 16));
         mDashedEnabled = ta.getBoolean(R.styleable.LineChartView_lcv_dashed_enabled, true);
@@ -168,6 +172,7 @@ public class LineChartView extends AbsChartView {
         //vertical line
         mVerticalLineColor = ta.getColor(R.styleable.LineChartView_lcv_vertical_lineColor, Color.parseColor("#ffffff"));
         mVerticalLineWidth = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_vertical_lineWidth, ChartUtils.dp2px(mContext, 1));
+        mVerticalLineDashedEffect = ta.getBoolean(R.styleable.LineChartView_lcv_vertical_dashed_effect, false);
         //point
         mPointColor = ta.getColor(R.styleable.LineChartView_lcv_point_color, Color.parseColor("#0045A7"));
         mPointSize = ta.getDimensionPixelSize(R.styleable.LineChartView_lcv_point_size, ChartUtils.dp2px(mContext, 10));
@@ -391,7 +396,7 @@ public class LineChartView extends AbsChartView {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(mDashedColor);
-        paint.setStrokeWidth(ChartUtils.dp2px(mContext, 0.5f));
+        paint.setStrokeWidth(mDashedWidth);
         if (mDashPathEffect == null) {
             paint.setPathEffect(new DashPathEffect(new float[]{5, 5}, 0));
         } else {
@@ -568,7 +573,7 @@ public class LineChartView extends AbsChartView {
             float dx = startDx + mItemWidth * mSelectPosition;
             drawVerticalLine(canvas, dx, mOldTopSpace + mDescriptionHeight + mDescriptionArrowSize, dx, getStartDy(), paint);
             double value = mLineChartDataList.get(mSelectPosition).getValue();
-            drawPoint(canvas, dx, getPointY(value), paint);
+            drawPoint(canvas, dx, getPointY(value));
             drawPointDescription(canvas, startDx, mSelectPosition);
         }
     }
@@ -579,7 +584,7 @@ public class LineChartView extends AbsChartView {
             float dx = startDx + mItemWidth * mSelectPosition;
             drawVerticalLine(canvas, dx, mOldTopSpace + mDescriptionHeight + mDescriptionArrowSize, dx, getStartDy(), paint);
             double value = mLineChartDataList.get(mSelectPosition).getValue();
-            drawPoint(canvas, dx, getPointYReverse(value), paint);
+            drawPoint(canvas, dx, getPointYReverse(value));
             drawPointDescription(canvas, startDx, mSelectPosition);
         }
     }
@@ -588,11 +593,19 @@ public class LineChartView extends AbsChartView {
     private void drawVerticalLine(Canvas canvas, float startX, float startY, float stopX, float stopY, Paint paint) {
         paint.setColor(mVerticalLineColor);
         paint.setStrokeWidth(mVerticalLineWidth);
+        if (mVerticalLineDashedEffect) {
+            if (mVerticalLinePathEffect == null) {
+                paint.setPathEffect(new DashPathEffect(new float[]{5, 5}, 0));
+            } else {
+                paint.setPathEffect(mDashPathEffect);
+            }
+        }
         canvas.drawLine(startX, startY, stopX, stopY, paint);
     }
 
     /*画描点*/
-    private void drawPoint(Canvas canvas, float cx, float cy, Paint paint) {
+    private void drawPoint(Canvas canvas, float cx, float cy) {
+        Paint paint = getSelectCeilPaint();
         final float radius = mPointSize / 2f;
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(mPointColor);
@@ -1020,6 +1033,17 @@ public class LineChartView extends AbsChartView {
         /*区域颜色*/
         public FluentInitializer areaColor(int areaColor) {
             mAreaColor = areaColor;
+            return this;
+        }
+
+        /*竖线虚线效果*/
+        public FluentInitializer verticalLineDashedEffect(boolean isDashedEffect) {
+            mVerticalLineDashedEffect = isDashedEffect;
+            return this;
+        }
+
+        public FluentInitializer verticalLinePathEffect(DashPathEffect effect) {
+            mVerticalLinePathEffect = effect;
             return this;
         }
 

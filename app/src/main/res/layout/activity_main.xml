@@ -44,6 +44,7 @@
         app:lcv_description_background="@color/colorAccent"
         app:lcv_area_enabled="true"
         app:lcv_display_animation="true"
+        app:lcv_vertical_dashed_effect="true"
         app:lcv_reverse="false"
         app:lcv_polyline_display_zero="false" />
 

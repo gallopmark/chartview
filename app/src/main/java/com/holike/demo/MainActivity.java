@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
 //        data.add(new LineChartData(7.8));
 //        data.add(new LineChartData(29));
 //        data.add(new LineChartData(35));
-//        data.add(new LineChartData("", 1, "排名：1"));
-//        data.add(new LineChartData("", 2, "排名：2"));
-//        data.add(new LineChartData("", 14, "排名：14"));
-//        data.add(new LineChartData("", 7, "排名：7"));
-//        data.add(new LineChartData("", 8, "排名：8"));
-//        data.add(new LineChartData("", 120, "排名：120"));
+        data.add(new LineChartData("", 1, "排名：1"));
+        data.add(new LineChartData("", 2, "排名：2"));
+        data.add(new LineChartData("", 14, "排名：14"));
+        data.add(new LineChartData("", 7, "排名：7"));
+        data.add(new LineChartData("", 8, "排名：8"));
+        data.add(new LineChartData("", 120, "排名：120"));
 //        data.add(new LineChartData(0));
 //        data.add(new LineChartData(0));
 //        data.add(new LineChartData(0));
