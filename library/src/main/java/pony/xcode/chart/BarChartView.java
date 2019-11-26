@@ -149,7 +149,7 @@ public class BarChartView extends AbsChartView {
     }
 
     public void setData(@Nullable List<BarChartData> dataList) {
-        if (dataList == null || dataList.isEmpty()) return;
+        if (dataList == null) return;
         mBarChartDataList = new ArrayList<>(dataList);
         int maxValue = getMaxValueFromData();
         mMaxGradient = ChartUtils.getMaxGraded(maxValue);

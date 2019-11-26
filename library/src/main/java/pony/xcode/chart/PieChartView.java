@@ -73,7 +73,7 @@ public class PieChartView extends View {
     }
 
     public void setPieChartDataList(@Nullable List<PieChartData> dataList) {
-        if (dataList != null && !dataList.isEmpty()) {
+        if (dataList != null) {
             this.mPieChartDataList = new ArrayList<>(dataList);
             calculation();
             if (mDisplayAnimation) {
