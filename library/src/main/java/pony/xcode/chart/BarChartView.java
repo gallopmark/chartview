@@ -18,6 +18,7 @@ import android.util.AttributeSet;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorInt;
+import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -30,6 +31,11 @@ import pony.xcode.chart.data.BarChartData;
  */
 public class BarChartView extends AbsChartView {
 
+    //mode
+    public static final int MODE_SCROLLABLE = 0;
+    public static final int MODE_FIXED = 1;
+    private int mMode;
+    private int mMinCount;
     //margin
     private int mLeftMargin; //左边距
     private int mRightMargin; //右边距
@@ -105,6 +111,8 @@ public class BarChartView extends AbsChartView {
 
     private void obtainValues(AttributeSet attrs) {
         TypedArray ta = mContext.obtainStyledAttributes(attrs, R.styleable.BarChartView);
+        mMode = ta.getInt(R.styleable.BarChartView_bcv_barMode, MODE_SCROLLABLE);
+        mMinCount = ta.getInt(R.styleable.BarChartView_bcv_minCount, 5);
         mLeftMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_leftMargin, ChartUtils.dp2px(mContext, 16));
         mRightMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_rightMargin, ChartUtils.dp2px(mContext, 16));
         mTopMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_topMargin, 0);
@@ -148,11 +156,20 @@ public class BarChartView extends AbsChartView {
         ta.recycle();
     }
 
+
     public void setData(@Nullable List<BarChartData> dataList) {
+        setData(dataList, 0);
+    }
+
+    public void setData(@Nullable List<BarChartData> dataList, int maxGradient) {
         if (dataList == null) return;
         mBarChartDataList = new ArrayList<>(dataList);
         int maxValue = getMaxValueFromData();
-        mMaxGradient = ChartUtils.getMaxGraded(maxValue);
+        if (maxGradient == 0) {
+            mMaxGradient = ChartUtils.getMaxGraded(maxValue);
+        } else {
+            mMaxGradient = maxGradient;
+        }
         resetInitialStatus();
         validateAndUpdate();
     }
@@ -229,16 +246,30 @@ public class BarChartView extends AbsChartView {
         }
     }
 
-    /*画条形图所需的总宽度*/
-    private int getNeedWidth() {
-        int dataSize;
-        int edgeSize;
-        //左边距+y轴最大值文本所占宽度+y轴间距+条形图宽度*数据源size+每个item宽度*数据源size（-1或+1）
+    private void initBarWidth() {
+        if (mMode == MODE_FIXED) {
+            mNeedWidth = ChartUtils.getScreenWidth(mContext);
+            int count = getDataSize() > mMinCount ? getDataSize() : mMinCount;
+            mDividerWidth = (mNeedWidth - (mLeftMargin + getTextMaxWidth() + mYAxisMargin + mBarWidth * count)) / getEdgeSize();
+        } else {
+            /*画条形图所需的总宽度*/
+            mNeedWidth = mLeftMargin + getTextMaxWidth() + mYAxisMargin + getDataSize() * mBarWidth + getEdgeSize() * mDividerWidth + mRightMargin;
+        }
+    }
+
+    private int getDataSize() {
         if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
-            dataSize = mXAxisTextArray.length;
+            return mXAxisTextArray.length;
+        } else {
+            return mBarChartDataList.size();
+        }
+    }
+
+    private int getEdgeSize() {
+        int edgeSize;
+        if (mXAxisTextArray != null && mXAxisTextArray.length > 0) {
             edgeSize = mXAxisTextArray.length - 1 <= 0 ? 0 : mXAxisTextArray.length - 1;
         } else {
-            dataSize = mBarChartDataList.size();
             edgeSize = mBarChartDataList.size() - 1 <= 0 ? 0 : mBarChartDataList.size() - 1;
         }
         if (mIncludeLeftEdge && mIncludeRightEdge) {
@@ -246,20 +277,11 @@ public class BarChartView extends AbsChartView {
         } else if (mIncludeLeftEdge || mIncludeRightEdge) {
             edgeSize += 1;
         }
-        return mLeftMargin + getTextMaxWidth() + mYAxisMargin + dataSize * mBarWidth + edgeSize * mDividerWidth + mRightMargin;
+        return edgeSize;
     }
 
     private int getTextMaxWidth() {
-        if (mMaxGradient > 0) {
-            String text;
-            if (!TextUtils.isEmpty(mUnit)) {
-                text = mMaxGradient + mUnit;
-            } else {
-                text = String.valueOf(mMaxGradient);
-            }
-            return ChartUtils.getTextWidth(text, mYAxisTextPaint);
-        }
-        return 0;
+        return ChartUtils.getMaxGradientTextWidth(mMaxGradient, mYAxisTextPaint, mUnit);
     }
 
     private int getYSpace() {
@@ -269,8 +291,8 @@ public class BarChartView extends AbsChartView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mBarChartDataList != null && !mBarChartDataList.isEmpty()) {
-            mNeedWidth = getNeedWidth();
+        if (mBarChartDataList != null) {
+            initBarWidth();
             int startDy = getStartDy();
             int ySpace = getYSpace();
             drawYAxis(canvas, startDy, ySpace);
@@ -391,6 +413,10 @@ public class BarChartView extends AbsChartView {
             float left = startDx + (mBarWidth + mDividerWidth) * i;
             float top = getPointY(value);
             float right = left + mBarWidth;
+            int colorId = mBarChartDataList.get(i).getBarColor();
+            if (colorId != 0) {
+                paint.setColor(colorId);
+            }
             canvas.drawRect(left, top, right, startDy, paint);
         }
         drawBarValue(canvas, startDx);
@@ -500,6 +526,7 @@ public class BarChartView extends AbsChartView {
     /*用于多属性初始化*/
     public class FluentInitializer {
         List<BarChartData> mData;
+        int mMaxGradient;
 
         FluentInitializer(@Nullable List<BarChartData> data,
                           @Nullable String[] xAxisTextArray,
@@ -507,6 +534,21 @@ public class BarChartView extends AbsChartView {
             this.mData = data;
             mXAxisTextArray = xAxisTextArray;
             mUnit = unit;
+        }
+
+        public FluentInitializer maxGradient(int maxGradient) {
+            this.mMaxGradient = maxGradient;
+            return this;
+        }
+
+        public FluentInitializer withMode(@IntRange(from = 0, to = 1) int mode) {
+            mMode = mode;
+            return this;
+        }
+
+        public FluentInitializer withMinCount(int minCount) {
+            mMinCount = minCount;
+            return this;
         }
 
         public FluentInitializer withXAxisTextArray(@ArrayRes int arrayId) {
@@ -742,7 +784,7 @@ public class BarChartView extends AbsChartView {
         }
 
         public void start() {
-            setData(mData);
+            setData(mData, mMaxGradient);
         }
     }
 }

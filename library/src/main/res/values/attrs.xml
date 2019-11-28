@@ -55,7 +55,7 @@
         <!--竖线粗细-->
         <attr name="lcv_vertical_lineWidth" format="dimension" />
         <!--竖线虚线效果-->
-        <attr name="lcv_vertical_dashed_effect" format="boolean"/>
+        <attr name="lcv_vertical_dashed_effect" format="boolean" />
         <!--选中后 描点大小-->
         <attr name="lcv_point_size" format="dimension" />
         <!--选中后 描点颜色-->
@@ -91,6 +91,11 @@
     </declare-styleable>
 
     <declare-styleable name="BarChartView">
+        <attr name="bcv_barMode">
+            <enum name="scrollable" value="0" />
+            <enum name="fixed" value="1" />
+        </attr>
+        <attr name="bcv_minCount" format="integer" />
         <!--左边距-->
         <attr name="bcv_leftMargin" format="dimension" />
         <!--右边距-->

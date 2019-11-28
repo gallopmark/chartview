@@ -75,19 +75,18 @@ public class MainActivity extends AppCompatActivity {
                 .descriptionTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                 .start();
         barChartView = findViewById(R.id.barChartView);
-        barChartData.add(new BarChartData("1月\n10", 1012.1));
-        barChartData.add(new BarChartData("2月", 138.8));
-//        barChartData.add(new BarChartData(3467.2));
-//        barChartData.add(new BarChartData(7.9));
-//        barChartData.add(new BarChartData(9.3));
-//        barChartData.add(new BarChartData(4.6));
+        barChartData.add(new BarChartData("", 40.33, Color.parseColor("#55B7C4"), "300.66万"));
+        barChartData.add(new BarChartData("", 20.3, Color.parseColor("#FC1A71"), "40.6万"));
+        barChartData.add(new BarChartData("", 16, Color.parseColor("#ACCE22"), "32万"));
+        barChartData.add(new BarChartData("", 12, Color.parseColor("#6B98FF"), "24万"));
+        barChartData.add(new BarChartData("", 3.37, Color.parseColor("#F69D3D"), "6.74万"));
+        barChartData.add(new BarChartData("", 6.47, Color.parseColor("#F9D335"), "16万"));
 //        barChartData.add(new BarChartData(15.5));
 //        barChartData.add(new BarChartData(104.3));
 //        barChartData.add(new BarChartData(30.3));
 //        barChartData.add(new BarChartData(7.7));
-        barChartView.withData(barChartData, null)
-                .withSubXAxisTextArray(new String[]{"10.01\n至\n10.31", "11.01\n至\n11.30"})
-                .barValueAsInt(true)
+        barChartView.withData(barChartData,null,"%")
+                .maxGradient(100).barValueUnitEdge(false)
                 .start();
 //        runnable();
     }

@@ -38,6 +38,7 @@
         android:layout_height="300dp"
         app:lcv_animation_duration="2000"
         app:lcv_description_height="20dp"
+        android:visibility="gone"
         app:lcv_description_padding="14dp"
         app:lcv_description_oval_size="16dp"
         app:lcv_description_textSize="12sp"
@@ -52,13 +53,16 @@
         android:id="@+id/barChartView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:bcv_bottom_space="100dp"
+        app:bcv_bottom_space="10dp"
         app:bcv_xAxis_textLineCount="2"
-        android:visibility="gone"
-        app:bcv_subXAxis_textSize="10sp"
-        app:bcv_subXAxis_textColor="@color/colorAccent"
-        app:bvb_subXAxis_textMargin="6dp"
-        app:bcv_include_leftEdge="false"
-        app:bcv_include_rightEdge="false" />
+        app:bcv_minCount="6"
+        app:bcv_leftMargin="10dp"
+        app:bcv_rightMargin="10dp"
+        app:bcv_barMode="fixed"
+        app:bcv_barWidth="40dp"
+        app:bcv_barValueUnitEdge="false"
+        app:bcv_divider_width="16dp"
+        app:bcv_include_leftEdge="true"
+        app:bcv_include_rightEdge="true" />
 
 </LinearLayout>

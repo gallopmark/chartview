@@ -5,11 +5,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 
-class ChartUtils {
+public class ChartUtils {
 
     static int getScreenWidth(Context context) {
         return context.getResources().getDisplayMetrics().widthPixels;
@@ -45,6 +46,23 @@ class ChartUtils {
         Rect rect = new Rect();
         paint.getTextBounds(text, 0, text.length(), rect);
         return rect.width();
+    }
+
+    public static int getMaxGradientTextWidth(int maxGradient, @NonNull Paint paint) {
+        return getMaxGradientTextWidth(maxGradient, paint, null);
+    }
+
+    public static int getMaxGradientTextWidth(int maxGradient, @NonNull Paint paint, @Nullable String unit) {
+        if (maxGradient > 0) {
+            String text;
+            if (!TextUtils.isEmpty(unit)) {
+                text = maxGradient + unit;
+            } else {
+                text = String.valueOf(maxGradient);
+            }
+            return ChartUtils.getTextWidth(text, paint);
+        }
+        return 0;
     }
 
     static int getTextHeight(@Nullable String text, Paint paint) {
