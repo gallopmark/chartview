@@ -136,7 +136,7 @@
         <attr name="bcv_barValue_enabled" format="boolean" />
         <attr name="bcv_barValue_margin" format="dimension" />
         <attr name="bcv_barValue_textSize" format="dimension" />
-        <attr name="bcv_barValue_textColor" format="dimension" />
+        <attr name="bcv_barValue_textColor" format="color" />
         <attr name="bcv_barValueUnitEdge" format="boolean" />
         <!--是否展示动画-->
         <attr name="bcv_display_animation" format="boolean" />
