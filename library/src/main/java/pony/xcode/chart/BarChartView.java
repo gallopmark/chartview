@@ -119,7 +119,7 @@ public class BarChartView extends AbsChartView {
         mOldTopSpace = mTopMargin;
         mBottomMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_bottomMargin, 0);
         mYScaleNum = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_yScaleNum, 5);
-        mBarColor = ta.getResourceId(R.styleable.BarChartView_bcv_barColor, Color.parseColor("#007afe"));
+        mBarColor = ta.getColor(R.styleable.BarChartView_bcv_barColor, Color.parseColor("#007afe"));
         mBarWidth = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barWidth, ChartUtils.dp2px(mContext, 48));
         mDividerWidth = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_divider_width, ChartUtils.dp2px(mContext, 24));
         mIncludeLeftEdge = ta.getBoolean(R.styleable.BarChartView_bcv_include_leftEdge, false);
@@ -141,7 +141,7 @@ public class BarChartView extends AbsChartView {
         mBarValueUnitEdge = ta.getBoolean(R.styleable.BarChartView_bcv_barValueUnitEdge, true);
         mBarValueMargin = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_margin, ChartUtils.dp2px(mContext, 4));
         mBarValueTextSize = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_textSize, ChartUtils.sp2px(mContext, 12));
-        mBarValueTextColor = ta.getDimensionPixelSize(R.styleable.BarChartView_bcv_barValue_textColor, Color.parseColor("#ffffff"));
+        mBarValueTextColor = ta.getColor(R.styleable.BarChartView_bcv_barValue_textColor, Color.parseColor("#ffffff"));
         mDisplayAnimation = ta.getBoolean(R.styleable.BarChartView_bcv_display_animation, true);
         mAnimationDuration = ta.getInt(R.styleable.BarChartView_bcv_animation_duration, 1000);
         //xAxis text array

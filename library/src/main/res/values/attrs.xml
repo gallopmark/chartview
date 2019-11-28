@@ -107,7 +107,7 @@
         <!--y轴平分数-->
         <attr name="bcv_yScaleNum" format="integer" />
         <!--条形图背景颜色或图片-->
-        <attr name="bcv_barColor" format="reference" />
+        <attr name="bcv_barColor" format="color" />
         <!--条形图宽度-->
         <attr name="bcv_barWidth" format="dimension" />
         <!--条形图之间的边距-->
