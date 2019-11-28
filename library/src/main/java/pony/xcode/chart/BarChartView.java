@@ -251,7 +251,7 @@ public class BarChartView extends AbsChartView {
             mNeedWidth = ChartUtils.getScreenWidth(mContext);
             int count = getDataSize() > mMinCount ? getDataSize() : mMinCount;
             if (getEdgeSize() > 0)
-                mDividerWidth = (mNeedWidth - (mLeftMargin + getTextMaxWidth() + mYAxisMargin + mBarWidth * count)) / getEdgeSize();
+                mDividerWidth = (mNeedWidth - (mLeftMargin + getTextMaxWidth() + mYAxisMargin + mBarWidth * count + mRightMargin)) / getEdgeSize();
         } else {
             /*画条形图所需的总宽度*/
             mNeedWidth = mLeftMargin + getTextMaxWidth() + mYAxisMargin + getDataSize() * mBarWidth + getEdgeSize() * mDividerWidth + mRightMargin;

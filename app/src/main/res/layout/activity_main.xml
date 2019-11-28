@@ -59,7 +59,7 @@
         app:bcv_leftMargin="10dp"
         app:bcv_rightMargin="10dp"
         app:bcv_barMode="fixed"
-        app:bcv_barWidth="40dp"
+        app:bcv_barWidth="30dp"
         app:bcv_barValueUnitEdge="false"
         app:bcv_divider_width="16dp"
         app:bcv_include_leftEdge="true"
