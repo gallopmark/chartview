@@ -148,7 +148,7 @@ public class PieChartView extends View {
         Paint paint = getPiePaint();
         final float cx = mWidth / 2f;
         final float cy = mHeight / 2f;
-        if (mPieChartDataList != null && !mPieChartDataList.isEmpty()) {
+        if (mPieChartDataList != null && !mPieChartDataList.isEmpty() && getTotalCount() > 0) {
             drawArc(canvas, paint);
         } else {
             paint.setColor(mOuterCircleColor);

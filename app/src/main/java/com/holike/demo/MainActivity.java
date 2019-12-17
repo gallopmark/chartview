@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.LinearLayout;
 
 
 import java.util.ArrayList;
@@ -31,13 +29,13 @@ public class MainActivity extends AppCompatActivity {
         ColorRandom colorRandom = new ColorRandom(10);
         PieChartView picChart = findViewById(R.id.picChart);
         List<PieChartData> list = new ArrayList<>();
-        list.add(new PieChartData("1", 100, (int) colorRandom.getColors().get(0)));
-        list.add(new PieChartData("2", 200, (int) colorRandom.getColors().get(1)));
-        list.add(new PieChartData("3", 300, (int) colorRandom.getColors().get(2)));
-        list.add(new PieChartData("4", 400, (int) colorRandom.getColors().get(3)));
-        list.add(new PieChartData("5", 500, (int) colorRandom.getColors().get(4)));
-        list.add(new PieChartData("6", 600, (int) colorRandom.getColors().get(5)));
-        list.add(new PieChartData("7", 700, (int) colorRandom.getColors().get(6)));
+        list.add(new PieChartData("1", 0, (int) colorRandom.getColors().get(0)));
+        list.add(new PieChartData("2", 0, (int) colorRandom.getColors().get(1)));
+        list.add(new PieChartData("3", 0, (int) colorRandom.getColors().get(2)));
+        list.add(new PieChartData("4", 0, (int) colorRandom.getColors().get(3)));
+        list.add(new PieChartData("5", 0, (int) colorRandom.getColors().get(4)));
+        list.add(new PieChartData("6", 0, (int) colorRandom.getColors().get(5)));
+        list.add(new PieChartData("7", 0, (int) colorRandom.getColors().get(6)));
         list.add(new PieChartData("8", 820, (int) colorRandom.getColors().get(7)));
         list.add(new PieChartData("9", 900, (int) colorRandom.getColors().get(8)));
         list.add(new PieChartData("10", 1000, (int) colorRandom.getColors().get(9)));
