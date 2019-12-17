@@ -41,6 +41,7 @@ public class PieChartView extends View {
     private ValueAnimator mAnimator;
 
     private List<PieChartData> mPieChartDataList;
+    private float mTotal;
     private static final int TOTAL_DEGREE = 360;
 
     public PieChartView(Context context) {
@@ -107,9 +108,9 @@ public class PieChartView extends View {
 
     private void calculation() {
         float pieStart = mStartAngle;
-        float total = getTotalCount();
+        mTotal = getTotalCount();
         for (PieChartData data : mPieChartDataList) {
-            final float percent = (data.getValue() / total);
+            final float percent = (data.getValue() / mTotal);
             data.setPercent(percent);
             data.setPieStart(pieStart);
             final float pieSweep = percent * TOTAL_DEGREE;
@@ -148,7 +149,7 @@ public class PieChartView extends View {
         Paint paint = getPiePaint();
         final float cx = mWidth / 2f;
         final float cy = mHeight / 2f;
-        if (mPieChartDataList != null && !mPieChartDataList.isEmpty() && getTotalCount() > 0) {
+        if (mPieChartDataList != null && !mPieChartDataList.isEmpty() && mTotal > 0) {
             drawArc(canvas, paint);
         } else {
             paint.setColor(mOuterCircleColor);
