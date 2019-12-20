@@ -14,6 +14,7 @@ import java.util.Random;
 import pony.xcode.chart.BarChartView;
 import pony.xcode.chart.LineChartView;
 import pony.xcode.chart.PieChartView;
+import pony.xcode.chart.DiskScaleView;
 import pony.xcode.chart.data.BarChartData;
 import pony.xcode.chart.data.LineChartData;
 import pony.xcode.chart.data.PieChartData;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
                 .maxGradient(100).barValueUnitEdge(false)
                 .start();
 //        runnable();
+        DiskScaleView scaleDiscView = findViewById(R.id.scaleDiscView);
+        scaleDiscView.setProgress(0.5f);
     }
 
     private void runnable() {

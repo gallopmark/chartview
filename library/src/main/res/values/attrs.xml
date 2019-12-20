@@ -170,4 +170,21 @@
         <!--动画持续时间-->
         <attr name="pcv_animation_duration" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="DiskScaleView">
+        <attr name="dsv_start_angle" format="integer"/> <!--开始角度-->
+        <attr name="dsv_sweep_angle" format="integer"/><!--扫过的总圆弧-->
+        <attr name="dsv_arrow_width" format="dimension"/> <!--箭头宽度-->
+        <attr name="dsv_arrow_height" format="dimension"/> <!--箭头高度-->
+        <attr name="dsv_arrow_small_height" format="dimension"/>
+        <attr name="dsv_arrow_color" format="dimension"/> <!--箭头颜色-->
+        <attr name="dsv_arrow_display_zero" format="boolean" /> <!--进度为0时是否显示箭头-->
+        <attr name="dsv_scale_width" format="dimension"/> <!--刻度宽度-->
+        <attr name="dsv_scale_height" format="dimension"/> <!--刻度高度-->
+        <attr name="dsv_scale_color" format="color"/> <!--刻度默认颜色-->
+        <attr name="dsv_scale_color_selected" format="color"/> <!--进度颜色-->
+        <attr name="dsv_scale_rotate_count" format="integer"/> <!--刻度数-->
+        <attr name="dsv_animation_enabled" format="boolean"/> <!--是否展示动画-->
+        <attr name="dsv_animation_duration" format="integer"/> <!--动画持续时间-->
+    </declare-styleable>
 </resources>

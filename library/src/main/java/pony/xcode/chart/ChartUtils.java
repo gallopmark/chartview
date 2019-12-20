@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 
-public class ChartUtils {
+class ChartUtils {
 
     static int getScreenWidth(Context context) {
         return context.getResources().getDisplayMetrics().widthPixels;
@@ -48,11 +48,7 @@ public class ChartUtils {
         return rect.width();
     }
 
-    public static int getMaxGradientTextWidth(int maxGradient, @NonNull Paint paint) {
-        return getMaxGradientTextWidth(maxGradient, paint, null);
-    }
-
-    public static int getMaxGradientTextWidth(int maxGradient, @NonNull Paint paint, @Nullable String unit) {
+    static int getMaxGradientTextWidth(int maxGradient, @NonNull Paint paint, @Nullable String unit) {
         if (maxGradient > 0) {
             String text;
             if (!TextUtils.isEmpty(unit)) {
@@ -63,13 +59,6 @@ public class ChartUtils {
             return ChartUtils.getTextWidth(text, paint);
         }
         return 0;
-    }
-
-    static int getTextHeight(@Nullable String text, Paint paint) {
-        if (TextUtils.isEmpty(text)) return 0;
-        Rect rect = new Rect();
-        paint.getTextBounds(text, 0, text.length(), rect);
-        return rect.height();
     }
 
     static float div(float value1, float value2) {
